@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons'; // use Icons
-
-
-import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
-import { mapping, light as lightTheme } from '@eva-design/eva';
-import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import * as Font from 'expo-font';
 
 import Home from './screens/Home';
 import Settings from './screens/Settings';
@@ -29,39 +25,49 @@ const Tab = createBottomTabNavigator();
  *  Usually, we'd render this component at the root of our app, which is usually the component exported from App.js.
 */
 export default function App() {
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  React.useEffect(()=>{
+    StatusBar.setHidden(true);
+    async function loadFont(){
+      console.log("async")
+      await Font.loadAsync({
+        Roboto: require("native-base/Fonts/Roboto.ttf"),
+        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+      });
+      setIsLoading(true);
+    };
+    loadFont();
+  }, [])
+
   return (
-    <React.Fragment>
-      <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider mapping={mapping} theme={lightTheme}>
-        <StatusBar hidden={true}/>
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName;
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
 
-                if (route.name === 'Home') {
-                  iconName = focused
-                    ? 'ios-information-circle'
-                    : 'ios-information-circle-outline';
-                } else if (route.name === 'Settings') {
-                  iconName = focused ? 'ios-list-box' : 'ios-list';
-                }
+            if (route.name === 'Home') {
+              iconName = focused
+                ? 'ios-information-circle'
+                : 'ios-information-circle-outline';
+            } else if (route.name === 'Settings') {
+              iconName = focused ? 'ios-list-box' : 'ios-list';
+            }
 
-                // You can return any component that you like here!
-                return <Ionicons name={iconName} size={size} color={color} />;
-              },
-            })}
-            tabBarOptions={{
-              activeTintColor: 'tomato',
-              inactiveTintColor: 'gray',
-            }}
-          >
-            <Tab.Screen name="Home" component={Home} options={{ title: 'Todo' }} />
-            <Tab.Screen name="Settings" component={Settings} />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </ApplicationProvider>
-    </React.Fragment>
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: 'tomato',
+          inactiveTintColor: 'gray',
+        }}
+      >
+        <Tab.Screen name="Home" component={Home} options={{ title: 'Todo' }} />
+        <Tab.Screen name="Settings" component={Settings} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }

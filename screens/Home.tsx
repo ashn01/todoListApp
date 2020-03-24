@@ -1,8 +1,7 @@
 import React from 'react';
 import { StyleSheet, View} from 'react-native';
-import {Layout, Tab, TabView, Text,} from '@ui-kitten/components';
+import {Text} from 'native-base';
 
-import Header from '../components/header/Header'
 
 interface todo {
     ID : number | null,
@@ -59,24 +58,8 @@ export default function Home() {
 
     return (
         <View>
-            <Header/>
-            <TabView
-                selectedIndex={selectedIndex}
-                onSelect={setSelectedIndex}>
-                {
-                    dummy.map((v, i) => {
-                        return (
-                            <Tab title={v.CategoryName} key={i}>
-                                <Layout style={styles.container}>
-                                    <Text>Helloworld</Text>
-                                </Layout>
-                            </Tab>
-                        )
-                    })
-                }
-            </TabView>
+            <Text>Helloworld</Text>
         </View>
-
     );
 }
 
