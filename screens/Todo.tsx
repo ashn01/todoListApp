@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet} from 'react-native';
-import {Container} from 'native-base';
+import {Container, Drawer} from 'native-base';
 
+import SideBar from './SideBar'
 import HeaderBar from './HeaderBar'
 import TodoLists from './TodoLists'
-
+import FooterBar from './FooterBar'
 
 export default function Todo() {
+  const drawerRef = useRef()
+
+  const openDrawer = () =>{
+    drawerRef && drawerRef.current && drawerRef!.current!._root.open()
+  }
+  const closeDrawer = () =>{
+    drawerRef && drawerRef.current && drawerRef!.current!._root.close()
+  }
     return (
         <Container>
-            <HeaderBar/>
-            <TodoLists/>
+            <Drawer ref={drawerRef}
+                    content={<SideBar/>}
+                    onClose={()=>closeDrawer()}>
+              <HeaderBar openDrawer={()=>openDrawer()}/>
+              <TodoLists/>
+              <FooterBar/>
+            </Drawer>
         </Container>
     );
 }

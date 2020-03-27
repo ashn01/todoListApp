@@ -7,20 +7,25 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../modules';
 
 import {dummy} from '../dummyData/dummyTodo'
+import {category} from '../dummyData/dummyCategory'
 
 export default function TodoLists()
 {
     const navigation = useNavigation();
     const curRoute = useSelector((state:RootState)=>state.navigation.route)
 
-    const editTodo = (index:number) =>{
-        console.log(index)
+    const editTodo = (id:number) =>{
+        console.log(id)
     }
     return (
         <Content>
             <List>
                 {
                     dummy.map((v,i)=>{
+                        let cate = category.find(c => c.ID == v.NewCategoryId)
+                        if(cate.checked === false)
+                            return null;
+                        
                         if(curRoute === "Todo" && v.TodoCompleted === false)
                         {
                             return (
@@ -30,8 +35,8 @@ export default function TodoLists()
                                         <Text>{v.TodoName}</Text>
                                     </Body>
                                     <Right>
-                                        <Button transparent onPress={()=>editTodo(1)}>
-                                            <Icon name='md-square' style={{color:v.color, marginRight:0 }}/>
+                                        <Button transparent onPress={()=>editTodo(v.ID)}>
+                                            <Icon name='md-square' style={{color:cate.color, marginRight:0 }}/>
                                             <Icon name='ios-arrow-forward' />
                                         </Button>
                                     </Right>
@@ -46,8 +51,8 @@ export default function TodoLists()
                                         <Text>{v.TodoName}</Text>
                                     </Body>
                                     <Right>
-                                        <Button transparent onPress={()=>editTodo(1)}>
-                                            <Icon name='md-square' style={{color:v.color, marginRight:0 }}/>
+                                        <Button transparent onPress={()=>editTodo(v.ID)}>
+                                            <Icon name='md-square' style={{color:cate.color, marginRight:0 }}/>
                                             <Icon name='ios-arrow-forward' />
                                         </Button>
                                     </Right>

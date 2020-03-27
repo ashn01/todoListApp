@@ -1,14 +1,18 @@
 import React from 'react'
-import {Button, Icon, Left, Body, Title, Right,Header} from 'native-base';
+import {Button, Icon, Left, Body, Title, Right,Header, Drawer } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 
 
-export default function HeaderBar() {
+interface Props {
+    openDrawer:()=>void
+}
+
+export default function HeaderBar({openDrawer}:Props) {
     // a hook which gives access to the navigation object
     const navigation = useNavigation(); 
-
     const handleMenu=()=>{
-        console.log("open menu")
+        console.log("Handle")
+        openDrawer();
     }
 
     const addTodo=()=>{
@@ -19,7 +23,7 @@ export default function HeaderBar() {
     return (
         <Header>
             <Left>
-                <Button transparent onPress={()=>handleMenu()}>
+                <Button transparent onPress={openDrawer}>
                     <Icon name='menu' />
                 </Button>
             </Left>
