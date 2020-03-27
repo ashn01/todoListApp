@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import 'react-native-gesture-handler';
-import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons'; // use Icons
-import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import { StatusBar } from 'react-native'; // to hide status bar
 
 // screens
 import Todo from './screens/Todo';
-import Settings from './screens/Settings';
 
 
 /*
@@ -27,24 +23,6 @@ const Tab = createBottomTabNavigator();
  *  Usually, we'd render this component at the root of our app, which is usually the component exported from App.js.
 */
 export default function MainNavigation() {
-  const [isLoading, setIsLoading] = useState(false);
-
-  React.useEffect(()=>{
-    StatusBar.setHidden(true);
-    async function loadFont(){
-      console.log("async")
-      await Font.loadAsync({
-        Roboto: require("native-base/Fonts/Roboto.ttf"),
-        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-      });
-      setIsLoading(true);
-    };
-    loadFont();
-  }, [])
-
-  if(!isLoading)
-    return <AppLoading/>
-  else
     return (
         <Tab.Navigator
           screenOptions={({ route }) => ({

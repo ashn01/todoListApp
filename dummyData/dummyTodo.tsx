@@ -7,7 +7,6 @@ export const dummy:ITodo[] = [
         TodoDescription : "Hello Global",
         TodoDeadline : new Date,
         TodoCompleted : false,
-        color:'#987234',
         NewCategoryId : 1
     },
     {
@@ -16,7 +15,6 @@ export const dummy:ITodo[] = [
         TodoDescription : "Bello Global",
         TodoDeadline : new Date,
         TodoCompleted : false,
-        color:'#ff00ff',
         NewCategoryId : 1
     },
     {
@@ -25,8 +23,7 @@ export const dummy:ITodo[] = [
         TodoDescription : "Todo Todo",
         TodoDeadline : new Date,
         TodoCompleted : false,
-        color:'#000000',
-        NewCategoryId : 1
+        NewCategoryId : 2
     },
     {
         ID : 4,
@@ -34,15 +31,13 @@ export const dummy:ITodo[] = [
         TodoDescription : "To many todo",
         TodoDeadline : new Date,
         TodoCompleted : false,
-        color:'#00ff00',
-        NewCategoryId : 1
+        NewCategoryId : 3
     },{
         ID : 5,
         TodoName : "Google",
         TodoDescription : "Hello Google",
         TodoDeadline : new Date,
         TodoCompleted : true,
-        color:'#987234',
         NewCategoryId : 1
     },
     {
@@ -51,7 +46,6 @@ export const dummy:ITodo[] = [
         TodoDescription : "Bello Amazon",
         TodoDeadline : new Date,
         TodoCompleted : true,
-        color:'#ff00ff',
         NewCategoryId : 1
     },
     {
@@ -60,8 +54,7 @@ export const dummy:ITodo[] = [
         TodoDescription : "Jello Samsung",
         TodoDeadline : new Date,
         TodoCompleted : true,
-        color:'#000000',
-        NewCategoryId : 1
+        NewCategoryId : 2
     },
     {
         ID : 8,
@@ -69,7 +62,6 @@ export const dummy:ITodo[] = [
         TodoDescription : "Dello Apple",
         TodoDeadline : new Date,
         TodoCompleted : true,
-        color:'#00ff00',
-        NewCategoryId : 1
+        NewCategoryId : 3
     }
 ]
