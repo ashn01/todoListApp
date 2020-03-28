@@ -1,6 +1,7 @@
 import ITodo from './ITodo'
 
 export default interface ICategory {
+    key:string,
     ID : number, // unique
     CategoryName : string,
     color:string,

@@ -1,7 +1,7 @@
 import React from 'react'
-import { Content, Text, ListItem, List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
+import { Content, ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
 import {SwipeListView} from 'react-native-swipe-list-view'
-
+import {View, StyleSheet,  TouchableOpacity, TouchableHighlight} from 'react-native'
 import {useDispatch,useSelector} from 'react-redux'
 
 
@@ -13,6 +13,8 @@ import { RootState } from '../modules';
 
 export default function SideBar()
 {
+    React.useEffect(()=>{
+    },[])
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
     const dispatch = useDispatch()
 
@@ -52,22 +54,70 @@ export default function SideBar()
                         <Text>All</Text>
                     </Body>
                 </ListItem>
-                {
-                    category.map((v,i)=>{
-                        return (
-                        <ListItem noIndent key={i} onPress={()=>selectCategory(v.ID)}>
-                            <CheckBox checked={v.checked} />
-                            <Body>
-                                <Text>{v.CategoryName}</Text>
-                            </Body>
-                    <Right>
-                        <Icon name='md-square' style={{ color: v.color, paddingLeft:10,paddingRight:10}} />
-                    </Right>
-                        </ListItem>
-                        )
-                    })
-                }
             </List>
+            <View>
+            <SwipeListView 
+                data={category}
+                renderItem={(data, rowMap) => (
+                    <TouchableHighlight>
+                        <ListItem style={{backgroundColor:'#FFFFFF'}} onPress={()=>selectCategory(data.item.ID)}>
+                            <CheckBox checked={data.item.checked} />
+                            <Body>
+                                <Text>{data.item.CategoryName}</Text>
+                            </Body>
+                            <Right>
+                                <Icon name='md-square' style={{ color: data.item.color, paddingLeft:10,paddingRight:10}} />
+                            </Right>
+                        </ListItem>
+                    </TouchableHighlight>
+                )}
+                renderHiddenItem={(data, rowMap) => (
+                    <View style={styles.rowBack}>
+                        <TouchableOpacity
+                            style={[styles.backRightBtn, styles.backRightBtnLeft]}
+                        >
+                            <Icon name="md-create"/>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.backRightBtn, styles.backRightBtnRight]}
+                        >
+                            <Icon name="md-trash"/>
+                        </TouchableOpacity>
+                    </View>
+                )}
+                rightOpenValue={-100}
+                closeOnRowPress
+                closeOnRowOpen
+                closeOnRowBeginSwipe
+                disableRightSwipe
+                /></View>
         </Content>
     )
 }
+
+const styles = StyleSheet.create({
+    rowBack: {
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingLeft: 15,
+    },
+    backRightBtn: {
+        alignItems: 'center',
+        bottom: 0,
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        width: 50,
+    },
+    backRightBtnLeft: {
+        backgroundColor: 'blue',
+        right: 50,
+    },
+    backRightBtnRight: {
+        backgroundColor: 'red',
+        right: 0,
+    },
+});
