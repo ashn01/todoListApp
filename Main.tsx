@@ -7,15 +7,14 @@ import {createStackNavigator } from '@react-navigation/stack';
 // modal screens
 import AddTodo from './screens/AddTodo';
 
-
-import Todo from './screens/Todo';
+import DrawerNavigation from './DrawerNavigation'
 
 /*
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
  *  Both of them are React components used for configuring the navigator. 
  *  The Navigator should contain Screen elements as its children to define the configuration for routes.
 */
-const Stack = createStackNavigator();
+const Root = createStackNavigator();
 
 //const Tab = createBottomTabNavigator();
 
@@ -27,10 +26,10 @@ const Stack = createStackNavigator();
 export default function Main() {
     return (
         <NavigationContainer >
-            <Stack.Navigator headerMode="none">
-                <Stack.Screen name="Main" component={Todo} options={{ title: 'Todo' }} />
-                <Stack.Screen name="AddTodo" component={AddTodo} />
-            </Stack.Navigator>
+            <Root.Navigator headerMode="none">
+                <Root.Screen name="Main" component={DrawerNavigation} options={{ title: 'Todo' }} />
+                <Root.Screen name="AddTodo" component={AddTodo} />
+            </Root.Navigator>
         </NavigationContainer>
     );
 }

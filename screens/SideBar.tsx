@@ -55,11 +55,9 @@ export default function SideBar()
                     </Body>
                 </ListItem>
             </List>
-            <View>
             <SwipeListView 
                 data={category}
                 renderItem={(data, rowMap) => (
-                    <TouchableHighlight>
                         <ListItem style={{backgroundColor:'#FFFFFF'}} onPress={()=>selectCategory(data.item.ID)}>
                             <CheckBox checked={data.item.checked} />
                             <Body>
@@ -69,7 +67,6 @@ export default function SideBar()
                                 <Icon name='md-square' style={{ color: data.item.color, paddingLeft:10,paddingRight:10}} />
                             </Right>
                         </ListItem>
-                    </TouchableHighlight>
                 )}
                 renderHiddenItem={(data, rowMap) => (
                     <View style={styles.rowBack}>
@@ -90,7 +87,7 @@ export default function SideBar()
                 closeOnRowOpen
                 closeOnRowBeginSwipe
                 disableRightSwipe
-                /></View>
+                />
         </Content>
     )
 }

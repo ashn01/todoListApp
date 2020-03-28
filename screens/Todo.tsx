@@ -8,23 +8,11 @@ import TodoLists from './TodoLists'
 import FooterBar from './FooterBar'
 
 export default function Todo() {
-  const drawerRef = useRef()
-
-  const openDrawer = () =>{
-    drawerRef && drawerRef.current && drawerRef!.current!._root.open()
-  }
-  const closeDrawer = () =>{
-    drawerRef && drawerRef.current && drawerRef!.current!._root.close()
-  }
     return (
         <Container>
-            <Drawer ref={drawerRef}
-                    content={<SideBar/>}
-                    onClose={()=>closeDrawer()}>
-              <HeaderBar openDrawer={()=>openDrawer()}/>
+              <HeaderBar/>
               <TodoLists/>
               <FooterBar/>
-            </Drawer>
         </Container>
     );
 }

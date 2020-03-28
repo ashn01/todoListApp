@@ -8,20 +8,11 @@ import { RootState } from '../modules';
 
 import {category} from '../dummyData/dummyCategory'
 
-interface Props {
-    openDrawer:()=>void
-}
 
-export default function HeaderBar({openDrawer}:Props) {
+export default function HeaderBar() {
     // a hook which gives access to the navigation object
     const navigation = useNavigation(); 
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
-
-
-    const handleMenu=()=>{
-        console.log("Handle")
-        openDrawer();
-    }
 
     const addTodo=()=>{
         console.log("Add todo")
@@ -31,7 +22,7 @@ export default function HeaderBar({openDrawer}:Props) {
     return (
         <Header>
             <Left>
-                <Button transparent onPress={openDrawer}>
+                <Button transparent onPress={()=>navigation.openDrawer()}>
                     <Icon name='menu' />
                 </Button>
             </Left>
