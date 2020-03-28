@@ -1,5 +1,6 @@
 
 export default interface ITodo {
+    key:string,
     ID : number | null,
     TodoName : string,
     TodoDescription : string,
