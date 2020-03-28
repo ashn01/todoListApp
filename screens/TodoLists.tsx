@@ -13,6 +13,7 @@ export default function TodoLists()
 {
     const navigation = useNavigation();
     const curRoute = useSelector((state:RootState)=>state.navigation.route)
+    const selectedCategory = useSelector((state:RootState)=>state.category.categoryId)
 
     const editTodo = (id:number) =>{
         console.log(id)
@@ -23,44 +24,81 @@ export default function TodoLists()
                 {
                     dummy.map((v,i)=>{
                         let cate = category.find(c => c.ID == v.NewCategoryId)
-                        if(cate.checked === false)
-                            return null;
-                        
-                        if(curRoute === "Todo" && v.TodoCompleted === false)
+                        if(selectedCategory === 0)// all checked
                         {
-                            return (
-                                <ListItem noIndent key={i}>
-                                    <CheckBox checked={false}/>
-                                    <Body>
-                                        <Text>{v.TodoName}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={()=>editTodo(v.ID)}>
-                                            <Icon name='md-square' style={{color:cate.color, marginRight:0 }}/>
-                                            <Icon name='ios-arrow-forward' />
-                                        </Button>
-                                    </Right>
-                                </ListItem>
-                            )
-                        }else if(curRoute === "Completed" && v.TodoCompleted === true)
-                        {
-                            return (
-                                <ListItem noIndent key={i}>
-                                    <CheckBox checked={true}/>
-                                    <Body>
-                                        <Text>{v.TodoName}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={()=>editTodo(v.ID)}>
-                                            <Icon name='md-square' style={{color:cate.color, marginRight:0 }}/>
-                                            <Icon name='ios-arrow-forward' />
-                                        </Button>
-                                    </Right>
-                                </ListItem>
-                            )
+                            if (cate.checked === false)
+                                return null;
+
+                            if (curRoute === "Todo" && v.TodoCompleted === false) {
+                                return (
+                                    <ListItem noIndent key={i}>
+                                        <CheckBox checked={false} />
+                                        <Body>
+                                            <Text>{v.TodoName}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => editTodo(v.ID)}>
+                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
+                                                <Icon name='ios-arrow-forward' />
+                                            </Button>
+                                        </Right>
+                                    </ListItem>
+                                )
+                            } else if (curRoute === "Completed" && v.TodoCompleted === true) {
+                                return (
+                                    <ListItem noIndent key={i}>
+                                        <CheckBox checked={true} />
+                                        <Body>
+                                            <Text>{v.TodoName}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => editTodo(v.ID)}>
+                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
+                                                <Icon name='ios-arrow-forward' />
+                                            </Button>
+                                        </Right>
+                                    </ListItem>
+                                )
+                            }
+                            else
+                                return null;
                         }
-                        else
-                            return null;
+                        else// selected specific category
+                        {
+                            if (v.NewCategoryId === selectedCategory && curRoute === "Todo" && v.TodoCompleted === false) {
+                                return (
+                                    <ListItem noIndent key={i}>
+                                        <CheckBox checked={false} />
+                                        <Body>
+                                            <Text>{v.TodoName}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => editTodo(v.ID)}>
+                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
+                                                <Icon name='ios-arrow-forward' />
+                                            </Button>
+                                        </Right>
+                                    </ListItem>
+                                )
+                            } else if (v.NewCategoryId === selectedCategory && curRoute === "Completed" && v.TodoCompleted === true) {
+                                return (
+                                    <ListItem noIndent key={i}>
+                                        <CheckBox checked={true} />
+                                        <Body>
+                                            <Text>{v.TodoName}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent onPress={() => editTodo(v.ID)}>
+                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
+                                                <Icon name='ios-arrow-forward' />
+                                            </Button>
+                                        </Right>
+                                    </ListItem>
+                                )
+                            }
+                            else
+                                return null;
+                        }                        
                     })
                 }
             </List>
