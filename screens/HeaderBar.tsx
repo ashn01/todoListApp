@@ -8,30 +8,24 @@ import { RootState } from '../modules';
 
 import {category} from '../dummyData/dummyCategory'
 
-interface Props {
-    openDrawer:()=>void
-}
 
-export default function HeaderBar({openDrawer}:Props) {
+export default function HeaderBar() {
     // a hook which gives access to the navigation object
     const navigation = useNavigation(); 
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
 
-
-    const handleMenu=()=>{
-        console.log("Handle")
-        openDrawer();
+    const editCategory=()=>{
+        console.log("editCategory")
     }
 
-    const addTodo=()=>{
-        console.log("Add todo")
-        navigation.navigate('AddTodo')
+    const deleteCategory=()=>{
+        console.log("deleteCategory")
     }
 
     return (
         <Header>
             <Left>
-                <Button transparent onPress={openDrawer}>
+                <Button transparent onPress={()=>navigation.openDrawer()}>
                     <Icon name='menu' />
                 </Button>
             </Left>
@@ -41,11 +35,14 @@ export default function HeaderBar({openDrawer}:Props) {
                         selectedCategoryId === 0 ? "ALL" :
                         category.find(c => c.ID === selectedCategoryId).CategoryName
                     }
-                    </Title>
+                </Title>
             </Body>
             <Right>
-                <Button transparent onPress={()=>addTodo()}>
-                    <Icon name='add' />
+                <Button transparent onPress={()=>editCategory()}>
+                    <Icon name='md-create' />
+                </Button>
+                <Button transparent onPress={()=>deleteCategory()}>
+                    <Icon name='md-trash' />
                 </Button>
             </Right>
         </Header>
