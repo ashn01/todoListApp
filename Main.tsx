@@ -5,7 +5,7 @@ import {createStackNavigator } from '@react-navigation/stack';
 
 
 // modal screens
-import AddTodo from './screens/AddTodo';
+import EditTodo from './screens/EditTodo';
 
 import DrawerNavigation from './DrawerNavigation'
 
@@ -28,7 +28,7 @@ export default function Main() {
         <NavigationContainer >
             <Root.Navigator headerMode="none">
                 <Root.Screen name="Main" component={DrawerNavigation} options={{ title: 'Todo' }} />
-                <Root.Screen name="AddTodo" component={AddTodo} />
+                <Root.Screen name="EditTodo" component={EditTodo} />
             </Root.Navigator>
         </NavigationContainer>
     );

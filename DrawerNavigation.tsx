@@ -27,15 +27,7 @@ function CustomDrawerContent(props)
   const dispatch = useDispatch()
 
   const addCategory = () =>{
-      
-  }
-
-  const editCategory = (id:number) =>{
-      console.log(id)
-  }
-
-  const deleteCategory = (id:number) =>{
-      console.log(id)
+      console.log(props.navigation)
   }
 
   const selectCategory = (id:number) =>{
@@ -63,54 +55,35 @@ function CustomDrawerContent(props)
             <Text>All</Text>
           </Body>
         </ListItem>
+        {
+          category.map((v,i)=>{
+            return (
+              <ListItem key={i} onPress={() => selectCategory(v.ID)}>
+                <CheckBox checked={v.checked} />
+                <Body>
+                  <Text>{v.CategoryName}</Text>
+                </Body>
+                <Right>
+                  <Icon name='md-square' style={{ color: v.color, paddingLeft: 10, paddingRight: 10 }} />
+                </Right>
+              </ListItem>
+            )
+          })
+        }
       </List>
-      <SwipeListView
-        data={category}
-        renderItem={(data, rowMap) => (
-          <ListItem style={{ backgroundColor: '#FFFFFF' }} onPress={() => selectCategory(data.item.ID)}>
-            <CheckBox checked={data.item.checked} />
-            <Body>
-              <Text>{data.item.CategoryName}</Text>
-            </Body>
-            <Right>
-              <Icon name='md-square' style={{ color: data.item.color, paddingLeft: 10, paddingRight: 10 }} />
-            </Right>
-          </ListItem>
-        )}
-        renderHiddenItem={(data, rowMap) => (
-          <View style={styles.rowBack}>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnLeft]}
-            >
-              <Icon name="md-create" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnRight]}
-            >
-              <Icon name="md-trash" />
-            </TouchableOpacity>
-          </View>
-        )}
-        rightOpenValue={-100}
-        closeOnRowPress
-        closeOnRowOpen
-        closeOnRowBeginSwipe
-        disableRightSwipe
-      />
     </DrawerContentScrollView>
   )
 }
 
-
-
 export default function MainNavigation() {
     return (
-        <Drawer.Navigator drawerContent={props=><CustomDrawerContent {...props}/>} drawerContentOptions={{activeBackgroundColor:'#ff00ff'}}>
-          <Drawer.Screen name="All" component={Todo} options={{ title: 'All', gestureEnabled:false}} />
+        <Drawer.Navigator drawerContent={props=><CustomDrawerContent {...props} />} drawerContentOptions={{activeBackgroundColor:'#ff00ff'}}>
+          <Drawer.Screen name="All" component={Todo}/>
         </Drawer.Navigator>
     );
 }
 
+/*
 
 const styles = StyleSheet.create({
   rowBack: {
@@ -138,3 +111,38 @@ const styles = StyleSheet.create({
       right: 0,
   },
 });
+
+<SwipeListView onTouchStart={()=>console.log("touched")} onScroll={()=>console.log("EndCapture")} onTouchEnd={()=>console.log("touchEnd")}
+        data={category}
+        renderItem={(data, rowMap) => (
+            <ListItem style={{ backgroundColor: '#FFFFFF' }} onPress={() => selectCategory(data.item.ID)}>
+              <CheckBox checked={data.item.checked} />
+              <Body>
+                <Text>{data.item.CategoryName}</Text>
+              </Body>
+              <Right>
+                <Icon name='md-square' style={{ color: data.item.color, paddingLeft: 10, paddingRight: 10 }} />
+              </Right>
+            </ListItem>
+        )}
+        renderHiddenItem={(data, rowMap) => (
+          <View style={styles.rowBack}>
+            <TouchableOpacity
+              style={[styles.backRightBtn, styles.backRightBtnLeft]}
+            >
+              <Icon name="md-create" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.backRightBtn, styles.backRightBtnRight]}
+            >
+              <Icon name="md-trash" />
+            </TouchableOpacity>
+          </View>
+        )}
+        rightOpenValue={-100}
+        closeOnRowPress
+        closeOnRowOpen
+        closeOnRowBeginSwipe
+        disableRightSwipe
+      />
+*/

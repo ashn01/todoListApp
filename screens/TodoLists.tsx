@@ -1,5 +1,5 @@
-import React from 'react'
-import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body} from 'native-base'
+import React, { useState } from 'react'
+import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body, Input} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 
 // redux
@@ -11,16 +11,41 @@ import {category} from '../dummyData/dummyCategory'
 
 export default function TodoLists()
 {
-    const navigation = useNavigation();
-    const curRoute = useSelector((state:RootState)=>state.navigation.route)
+    // navigation hook to open modals
+    const navigation = useNavigation()
+    // get Current route exp) todo or completed
+    const curRoute = useSelector((state:RootState)=>state.navigation.route) 
+    // get selected category to generate proper todos being contained by the selected category
     const selectedCategory = useSelector((state:RootState)=>state.category.categoryId)
+
+    // todo text
+    const [todoText, setTodoText] = useState('');
+
+    const addTodo =() =>{
+        console.log(todoText);
+        setTodoText(''); // empty todo field
+    }
 
     const editTodo = (id:number) =>{
         console.log(id)
+        navigation.navigate('EditTodo',{todoId:id})
     }
     return (
         <Content>
             <List>
+                <ListItem noIndent>
+                    <Body>
+                        <Input placeholder='Click here to add a todo' 
+                        value={todoText}
+                        onChangeText={(e)=>setTodoText(e)}
+                        onSubmitEditing={()=>addTodo()}/>
+                    </Body>
+                    <Right>
+                        <Button transparent onPress={() => addTodo()}>
+                            <Icon name='md-add' />
+                        </Button>
+                    </Right>
+                </ListItem>
                 {
                     dummy.map((v,i)=>{
                         let cate = category.find(c => c.ID == v.NewCategoryId)

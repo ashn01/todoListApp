@@ -14,9 +14,12 @@ export default function HeaderBar() {
     const navigation = useNavigation(); 
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
 
-    const addTodo=()=>{
-        console.log("Add todo")
-        navigation.navigate('AddTodo')
+    const editCategory=()=>{
+        console.log("editCategory")
+    }
+
+    const deleteCategory=()=>{
+        console.log("deleteCategory")
     }
 
     return (
@@ -32,11 +35,14 @@ export default function HeaderBar() {
                         selectedCategoryId === 0 ? "ALL" :
                         category.find(c => c.ID === selectedCategoryId).CategoryName
                     }
-                    </Title>
+                </Title>
             </Body>
             <Right>
-                <Button transparent onPress={()=>addTodo()}>
-                    <Icon name='add' />
+                <Button transparent onPress={()=>editCategory()}>
+                    <Icon name='md-create' />
+                </Button>
+                <Button transparent onPress={()=>deleteCategory()}>
+                    <Icon name='md-trash' />
                 </Button>
             </Right>
         </Header>
