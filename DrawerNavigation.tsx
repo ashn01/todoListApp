@@ -14,17 +14,27 @@ import {useDispatch,useSelector} from 'react-redux'
 import {selectedCategory} from './modules/category/actions'
 import { RootState } from './modules';
 
-// category
-import {category} from './dummyData/dummyCategory'
+import ICategory from './interfaces/ICategory'
+
+// db
+import {getCategories} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props)
 {
+  const [category,setCategory] = useState<ICategory[]>([]);
   React.useEffect(()=>{
+    getCategory()
   },[])
+
   const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
   const dispatch = useDispatch()
+
+  const getCategory = async () =>{
+    const categories = await getCategories();
+    setCategory(categories)
+  }
 
   const addCategory = () =>{
       console.log(props.navigation)
@@ -58,10 +68,10 @@ function CustomDrawerContent(props)
         {
           category.map((v,i)=>{
             return (
-              <ListItem key={i} onPress={() => selectCategory(v.ID)}>
-                <CheckBox checked={v.checked} />
+              <ListItem key={i} onPress={() => selectCategory(v.id)}>
+                <CheckBox checked={v.checked === 1} />
                 <Body>
-                  <Text>{v.CategoryName}</Text>
+                  <Text>{v.categoryName}</Text>
                 </Body>
                 <Right>
                   <Icon name='md-square' style={{ color: v.color, paddingLeft: 10, paddingRight: 10 }} />
@@ -82,67 +92,3 @@ export default function MainNavigation() {
         </Drawer.Navigator>
     );
 }
-
-/*
-
-const styles = StyleSheet.create({
-  rowBack: {
-      alignItems: 'center',
-      backgroundColor: '#FFFFFF',
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingLeft: 15,
-  },
-  backRightBtn: {
-      alignItems: 'center',
-      bottom: 0,
-      justifyContent: 'center',
-      position: 'absolute',
-      top: 0,
-      width: 50,
-  },
-  backRightBtnLeft: {
-      backgroundColor: 'blue',
-      right: 50,
-  },
-  backRightBtnRight: {
-      backgroundColor: 'red',
-      right: 0,
-  },
-});
-
-<SwipeListView onTouchStart={()=>console.log("touched")} onScroll={()=>console.log("EndCapture")} onTouchEnd={()=>console.log("touchEnd")}
-        data={category}
-        renderItem={(data, rowMap) => (
-            <ListItem style={{ backgroundColor: '#FFFFFF' }} onPress={() => selectCategory(data.item.ID)}>
-              <CheckBox checked={data.item.checked} />
-              <Body>
-                <Text>{data.item.CategoryName}</Text>
-              </Body>
-              <Right>
-                <Icon name='md-square' style={{ color: data.item.color, paddingLeft: 10, paddingRight: 10 }} />
-              </Right>
-            </ListItem>
-        )}
-        renderHiddenItem={(data, rowMap) => (
-          <View style={styles.rowBack}>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnLeft]}
-            >
-              <Icon name="md-create" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnRight]}
-            >
-              <Icon name="md-trash" />
-            </TouchableOpacity>
-          </View>
-        )}
-        rightOpenValue={-100}
-        closeOnRowPress
-        closeOnRowOpen
-        closeOnRowBeginSwipe
-        disableRightSwipe
-      />
-*/

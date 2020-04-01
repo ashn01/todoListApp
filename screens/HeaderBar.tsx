@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Button, Icon, Left, Body, Title, Right,Header, Drawer } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 
@@ -6,19 +6,40 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../modules';
 
 
-import {category} from '../dummyData/dummyCategory'
+// import {category} from '../dummyData/dummyCategory'
+
+import {getCategory,addCategory} from '../helper/sqlite'
 
 
 export default function HeaderBar() {
     // a hook which gives access to the navigation object
     const navigation = useNavigation(); 
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
+    const [title, setTitle] = useState('');
+
+    React.useEffect(()=>{
+        setHeader();
+    },[selectedCategoryId])
 
     const editCategory=()=>{
         console.log("editCategory")
+        addCategory('Bello','#123123',false)
+        addCategory('Dello','#00ff00',false)
+        addCategory('Jello','#ffff00',false)
+        addCategory('Mello','#00ffff',false)
     }
 
-    const deleteCategory=()=>{
+    const setHeader= async ()=>{
+        if(selectedCategoryId === 0)
+            setTitle("ALL");
+        else
+        {
+            const category = await getCategory(selectedCategoryId);
+            setTitle(category.categoryName);
+        }
+    }
+
+    const deleteCategory= async ()=>{
         console.log("deleteCategory")
     }
 
@@ -32,8 +53,7 @@ export default function HeaderBar() {
             <Body>
                 <Title>
                     {
-                        selectedCategoryId === 0 ? "ALL" :
-                        category.find(c => c.ID === selectedCategoryId).CategoryName
+                       title
                     }
                 </Title>
             </Body>
