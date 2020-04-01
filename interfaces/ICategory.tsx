@@ -1,8 +1,8 @@
 import ITodo from './ITodo'
 
 export default interface ICategory {
-    key:string,
-    id : number, // unique
+    key:string|null,
+    id : number|null, // unique
     categoryName : string,
     color:string,
     checked:boolean|number, // checked to be shown

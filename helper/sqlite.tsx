@@ -3,26 +3,28 @@ import ICategory  from '../interfaces/ICategory'
 
 
 const db = SQLite.openDatabase('doobido.db')
-createTables();
 
-export function createTables() {
-    db.transaction(tx => {
-        tx.executeSql(`create table if not exists category (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                categoryName TEXT,
-                color TEXT,
-                checked BOOLEAN,
-                Owner TEXT
-                );`);
-        tx.executeSql(`create table if not exists todo (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                todoName TEXT,
-                todoDescription TEXT,
-                todoDeadline DATE,
-                todoCompleted BOOLEAN,
-                categoryId INTEGER,
-                FOREIGN KEY (categoryID) REFERENCES category(id)
-                );`);
+export async function createTables():Promise<boolean> {
+    return new Promise((resolve, reject)=>{
+        db.transaction(tx => {
+            tx.executeSql(`create table if not exists category (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    categoryName TEXT,
+                    color TEXT,
+                    checked BOOLEAN,
+                    Owner TEXT
+                    );`);
+            tx.executeSql(`create table if not exists todo (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    todoName TEXT,
+                    todoDescription TEXT,
+                    todoDeadline DATE,
+                    todoCompleted BOOLEAN,
+                    categoryId INTEGER,
+                    FOREIGN KEY (categoryID) REFERENCES category(id)
+                    );`);
+            resolve(true);
+        })
     })
 }
 
@@ -35,6 +37,7 @@ export function addCategory(name:string, color:string, checked:boolean|null)
             console.log("Success")
         },(tx,err)=>{
             console.log(err)
+            return false;
         })
     })
 }
@@ -48,6 +51,7 @@ export function editCategory(id:number, name:string, color:string, checked:boole
             console.log("Success")
         },(tx,err)=>{
             console.log(err)
+            return false;
         })
     })
 }
@@ -65,6 +69,7 @@ export async function getCategories():Promise<ICategory[]>
                 resolve(ret);
             },(tx,err)=>{
                 console.log(err)
+                return false;
             })
         })
     })
@@ -81,6 +86,7 @@ export async function getCategory(id:number):Promise<ICategory>
                 resolve(ret);
             },(tx,err)=>{
                 console.log(err)
+                return false;
             })
         })
     })
@@ -96,6 +102,7 @@ export function test(str:string){
         },
         (tx,err)=>{
             console.log(err)
+            return false;
         })
     })
 

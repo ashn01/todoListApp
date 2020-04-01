@@ -23,10 +23,7 @@ export default function HeaderBar() {
 
     const editCategory=()=>{
         console.log("editCategory")
-        addCategory('Bello','#123123',false)
-        addCategory('Dello','#00ff00',false)
-        addCategory('Jello','#ffff00',false)
-        addCategory('Mello','#00ffff',false)
+        navigation.navigate('EditCategory',{categoryId:selectedCategoryId})
     }
 
     const setHeader= async ()=>{

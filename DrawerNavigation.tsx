@@ -11,39 +11,46 @@ import Todo from './screens/Todo';
 
 // redux
 import {useDispatch,useSelector} from 'react-redux'
-import {selectedCategory} from './modules/category/actions'
+import {selectedCategory, setCategory} from './modules/category/actions'
 import { RootState } from './modules';
 
 import ICategory from './interfaces/ICategory'
+import { useNavigation } from '@react-navigation/native';
 
-// db
-import {getCategories} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props)
 {
-  const [category,setCategory] = useState<ICategory[]>([]);
-  React.useEffect(()=>{
-    getCategory()
-  },[])
-
-  const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
+  // to display categories on panel
+  const categories:ICategory[] = useSelector((state:RootState)=>state.category.categories);
+  // to set selected category's background
+  const selectedCategoryId:number = useSelector((state:RootState)=>state.category.categoryId)
   const dispatch = useDispatch()
+  const navigation = useNavigation();
 
-  const getCategory = async () =>{
-    const categories = await getCategories();
-    setCategory(categories)
-  }
+  const [update,setUpdate] = useState(0) // force update
+
+  React.useEffect(()=>{
+    console.log("category changes")
+  },[update])
 
   const addCategory = () =>{
-      console.log(props.navigation)
+    navigation.navigate('EditCategory',{categoryId:-1})
   }
 
   const selectCategory = (id:number) =>{
       console.log(id)
       dispatch(selectedCategory(id))
       props.navigation.closeDrawer()
+  }
+
+  const checkCategory = (id:number)=>{
+    var category = categories.find(c=>c.id === id)
+    category.checked = category.checked == 0 ? 1 : 0
+    dispatch(setCategory(category))
+
+    setUpdate(update+1);// force update
   }
 
   return (
@@ -65,16 +72,16 @@ function CustomDrawerContent(props)
             <Text>All</Text>
           </Body>
         </ListItem>
-        {
-          category.map((v,i)=>{
+        { 
+          categories.map((v,i)=>{
             return (
               <ListItem key={i} onPress={() => selectCategory(v.id)}>
-                <CheckBox checked={v.checked === 1} />
+                <CheckBox checked={v.checked === 1} onPress={()=>checkCategory(v.id)}/>
                 <Body>
                   <Text>{v.categoryName}</Text>
                 </Body>
                 <Right>
-                  <Icon name='md-square' style={{ color: v.color, paddingLeft: 10, paddingRight: 10 }} />
+                  <Icon name='md-square' style={{ color: v.color, paddingLeft: 10, paddingRight: 10}} />
                 </Right>
               </ListItem>
             )
