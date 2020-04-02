@@ -3,12 +3,12 @@ import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Conte
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 import {useDispatch,useSelector} from 'react-redux'
-import {addCategory, updateCategory} from '../modules/category/actions'
+import {addCategory, updateCategory, selectedCategory as selectCategory} from '../modules/category/actions'
 
 import { RootState } from '../modules';
 
 // db
-import {addOrEditCategory} from '../helper/sqlite'
+import {insertCategory, updateCategory as dbUpdateCategory} from '../helper/sqlite'
 
 // interface
 import ICategory from '../interfaces/ICategory'
@@ -40,12 +40,22 @@ export default function EditCategory({route, navigation})
         
     },[categoryId])
 
-    const editCategory = ()=>{
-        addOrEditCategory(categoryId,category);
+    const editCategory = async ()=>{
         if(categoryId === -1)
+        {
+            // insert database
+            var id = await insertCategory(category);
+            // update redux
             dispatch(addCategory(category))
+            dispatch(selectCategory(id))
+        }
         else
+        {
+            // update database
+            dbUpdateCategory(category)
+            // update redux
             dispatch(updateCategory(category))
+        }
         navigation.goBack();
     }
     return (

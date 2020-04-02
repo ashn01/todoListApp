@@ -28,36 +28,40 @@ export async function createTables():Promise<boolean> {
     })
 }
 
-export function addOrEditCategory(id:number, category:ICategory)
+export async function insertOrEditCategory(id:number, category:ICategory)
 {
-    console.log(id)
-    console.log(category)
-    const c = category.checked ? 1 : 0;
-    if(id === -1) // add
-        addCategory(category.categoryName,category.color,category.checked)
-    else // edit
-        editCategory(id,category.categoryName,category.color,category.checked)
+    // const c = category.checked ? 1 : 0;
+    // var affectedId
+    // if(id === -1) // add
+    //     affectedId = await insertCategory(category.categoryName,category.color,category.checked)
+    // else // edit
+    //     editCategory(id,category.categoryName,category.color,category.checked)
+
+    // return affectedId
 }
 
-export function addCategory(name:string, color:string, checked:number|boolean)
+export function insertCategory(category:ICategory):Promise<number>
 {
-    const c = checked ? 1 : 0;
-    db.transaction(tx=>{
-        tx.executeSql(`INSERT INTO CATEGORY (categoryName, color, checked) VALUES (?,?,?);`,[name,color,c],
-        (tx,res)=>{
-            console.log("Success")
-        },(tx,err)=>{
-            console.log(err)
-            return false;
+    return new Promise((resolve,reject)=>{
+        const c = category.checked ? 1 : 0;
+        db.transaction(tx=>{
+            tx.executeSql(`INSERT INTO CATEGORY (categoryName, color, checked) VALUES (?,?,?);`,[category.categoryName,category.color,c],
+            (tx,res)=>{
+                console.log("Success")
+                resolve(res.insertId)
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
         })
     })
 }
 
-export function editCategory(id:number, name:string, color:string, checked:number|boolean)
+export function updateCategory(category:ICategory)
 {
-    const c = checked ? 1 : 0;
+    const c = category.checked ? 1 : 0;
     db.transaction(tx=>{
-        tx.executeSql(`UPDATE CATEGORY SET categoryName = ?, color = ?, checked = ? WHERE id = ?`,[name,color,c,id],
+        tx.executeSql(`UPDATE CATEGORY SET categoryName = ?, color = ?, checked = ? WHERE id = ?`,[category.categoryName,category.color,c,category.id],
         (tx,res)=>{
             console.log("Success")
         },(tx,err)=>{

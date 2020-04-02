@@ -16,7 +16,7 @@ import ICategory from './interfaces/ICategory'
 import { useNavigation } from '@react-navigation/native';
 
 // db
-import {editCategory} from './helper/sqlite'
+import {updateCategory as dbUpdateCategory} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
@@ -48,7 +48,7 @@ function CustomDrawerContent(props)
     dispatch(updateCategory(category))
 
     // update database
-    editCategory(id,category.categoryName,category.color,category.checked);
+    dbUpdateCategory(category);
   }
 
   return (
