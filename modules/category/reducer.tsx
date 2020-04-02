@@ -3,7 +3,7 @@ import {
     CategoryAction, 
     SELECTED_CATEGORY, 
     SET_CATEGORIES, 
-    SET_CATEGORY, 
+    UPDATE_CATEGORY, 
     ADD_CATEGORY,
     DELETE_CATEGORY
 } from './actions';
@@ -21,7 +21,7 @@ function navigation(state: Category = initialState, action: CategoryAction) : Ca
                 ...state,
                 categories : action.payload
             }
-        case SET_CATEGORY:
+        case UPDATE_CATEGORY:
             return {
                 ...state,
                 categories : state.categories.map(c => c.id === action.payload.id ? action.payload : c)

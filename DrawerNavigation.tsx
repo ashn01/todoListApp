@@ -9,7 +9,7 @@ import Todo from './screens/Todo';
 
 // redux
 import {useDispatch,useSelector} from 'react-redux'
-import {selectedCategory, setCategory} from './modules/category/actions'
+import {selectedCategory, updateCategory} from './modules/category/actions'
 import { RootState } from './modules';
 
 import ICategory from './interfaces/ICategory'
@@ -45,7 +45,7 @@ function CustomDrawerContent(props)
     // update redux
     var category = allCategories.find(c=>c.id === id)
     category.checked = !category.checked
-    dispatch(setCategory(category))
+    dispatch(updateCategory(category))
 
     // update database
     editCategory(id,category.categoryName,category.color,category.checked);

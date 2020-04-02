@@ -3,7 +3,7 @@ import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Conte
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 import {useDispatch,useSelector} from 'react-redux'
-import {addCategory} from '../modules/category/actions'
+import {addCategory, updateCategory} from '../modules/category/actions'
 
 import { RootState } from '../modules';
 
@@ -44,6 +44,9 @@ export default function EditCategory({route, navigation})
         addOrEditCategory(categoryId,category);
         if(categoryId === -1)
             dispatch(addCategory(category))
+        else
+            dispatch(updateCategory(category))
+        navigation.goBack();
     }
     return (
         <Container>
