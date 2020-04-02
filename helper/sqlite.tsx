@@ -78,17 +78,20 @@ export function insertCategory(category:ICategory):Promise<number>
     })
 }
 
-export function updateCategory(category:ICategory)
+export function updateCategory(category:ICategory):Promise<boolean>
 {
-    const c = category.checked ? 1 : 0;
-    db.transaction(tx=>{
-        tx.executeSql(`UPDATE CATEGORY SET categoryName = ?, color = ?, checked = ? WHERE id = ?`,
-        [category.categoryName,category.color,c,category.id],
-        (tx,res)=>{
-            console.log("Success updateCategory")
-        },(tx,err)=>{
-            console.log(err)
-            return false;
+    return new Promise((resolve,reject)=>{
+        const c = category.checked ? 1 : 0;
+        db.transaction(tx=>{
+            tx.executeSql(`UPDATE CATEGORY SET categoryName = ?, color = ?, checked = ? WHERE id = ?`,
+            [category.categoryName,category.color,c,category.id],
+            (tx,res)=>{
+                console.log("Success updateCategory")
+                resolve(true)
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
         })
     })
 }
@@ -192,7 +195,7 @@ export function getTodos(id:number):Promise<ITodo[]>
 {
     return new Promise((resolve,reject)=>{
         db.transaction(tx=>{
-            tx.executeSql(`SELECT * FROM TODO WHERE categoryId = ?`,[id],
+            tx.executeSql(`SELECT t.id, t.todoName, t.todoDescription, t.todoDeadline, t.todoCompleted, t.categoryId , c.color FROM TODO t, CATEGORY c WHERE t.categoryId = c.id AND t.categoryId = ?;`,[id],
             (tx,res)=>{
                 console.log("Success getTodos")
                 var ret = [];
@@ -212,8 +215,6 @@ export function updateTodo(todo:ITodo):Promise<boolean>
 {
     return new Promise((resolve,reject)=>{
         const c = todo.todoCompleted ? 1 : 0;
-        console.log(todo)
-        console.log(c)
         db.transaction(tx=>{
             tx.executeSql(`UPDATE TODO SET todoName = ?, todoDescription = ?, todoDeadline = ?, todoCompleted = ?, categoryId = ? WHERE id = ?;`,
             [todo.todoName, todo.todoDescription, todo.todoDeadline.toISOString(), c, todo.categoryId, todo.id],

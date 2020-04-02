@@ -3,8 +3,9 @@ import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Bod
 import { useNavigation } from '@react-navigation/native';
 
 // redux
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../modules';
+import { setTodos } from '../modules/todo/actions'
 
 // db
 import {addTodo, getAllTodos, getTodos, updateTodo} from '../helper/sqlite'
@@ -20,10 +21,9 @@ export default function TodoLists()
     // get selected category to generate proper todos being contained by the selected category
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
     
+    const allTodos = useSelector((state:RootState)=>state.todo.todos)
     
-    
-    const [todos,setTodos] = useState<ITodo[]>([]);
-
+    const dispatch = useDispatch()
 
     // todo text
     const [todoText, setTodoText] = useState('');
@@ -36,16 +36,17 @@ export default function TodoLists()
         initTodos();  
     },[selectedCategoryId])
 
+    // get data from db and store redux
     const initTodos = async ()=>{
         if(selectedCategoryId === 0) // select all
         {
             const todos = await getAllTodos();
-            setTodos(todos);
+            dispatch(setTodos(todos))
         }
         else // select any specific
         {
             const todos = await getTodos(selectedCategoryId);
-            setTodos(todos);
+            dispatch(setTodos(todos))
         }
     }
 
@@ -69,7 +70,8 @@ export default function TodoLists()
     }
 
     const toggleCheckBox = (id:number) =>{
-        const todo = todos.find(t=>t.id == id)
+        // database
+        const todo = allTodos.find(t=>t.id == id)
         todo.todoCompleted = !todo.todoCompleted
         updateTodo(todo);
         initTodos();
@@ -91,7 +93,7 @@ export default function TodoLists()
                     </Right>
                 </ListItem>
                 {   
-                    todos.map((v,i)=>{
+                    allTodos.map((v,i)=>{
                         if (curRoute == "Todo" && v.todoCompleted == 0) {
                             return (
                                 <ListItem noIndent key={i}>
