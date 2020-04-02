@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text } from 'native-base'
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import DateTimePicker from '@react-native-community/datetimepicker'
-import {Platform} from 'react-native'
 
-import {useSelector} from 'react-redux'
+import {useDispatch,useSelector} from 'react-redux'
+import {addCategory} from '../modules/category/actions'
+
 import { RootState } from '../modules';
+
+// db
+import {addOrEditCategory} from '../helper/sqlite'
 
 // interface
 import ICategory from '../interfaces/ICategory'
@@ -24,15 +27,24 @@ export default function EditCategory({route, navigation})
 {
     // get category id from param
     const {categoryId} = route.params
+    // get callback function
+    const {setUpdate} = route.params
     // get category from redux
-    const editCategory:ICategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id == categoryId))
+    const selectedCategory:ICategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id == categoryId))
     // set category from redux. if it is undefined, set initialstate
-    const [category, setCategory] = useState<ICategory>(editCategory || initialState);
+    const [category, setCategory] = useState<ICategory>(selectedCategory || initialState);
+
+    const dispatch = useDispatch();
 
     React.useEffect(()=>{
         
     },[categoryId])
-    
+
+    const editCategory = ()=>{
+        addOrEditCategory(categoryId,category);
+        if(categoryId === -1)
+            dispatch(addCategory(category))
+    }
     return (
         <Container>
             <Header>
@@ -46,7 +58,7 @@ export default function EditCategory({route, navigation})
                     <Subtitle>{category.categoryName}</Subtitle>
                 </Body>
                 <Right>
-                    <Button>
+                    <Button onPress={()=>editCategory()}>
                         <Icon name='md-checkmark'/>
                     </Button>
                 </Right>
@@ -59,6 +71,7 @@ export default function EditCategory({route, navigation})
                             <Item stackedLabel>
                                 <Label>Category Title</Label>
                                 <Input
+                                    nativeID='categoryName'
                                     value={category.categoryName}
                                     onChangeText={(text) => setCategory({ ...category, categoryName: text })} />
                             </Item>

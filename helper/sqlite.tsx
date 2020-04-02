@@ -28,7 +28,18 @@ export async function createTables():Promise<boolean> {
     })
 }
 
-export function addCategory(name:string, color:string, checked:boolean|null)
+export function addOrEditCategory(id:number, category:ICategory)
+{
+    console.log(id)
+    console.log(category)
+    const c = category.checked ? 1 : 0;
+    if(id === -1) // add
+        addCategory(category.categoryName,category.color,category.checked)
+    else // edit
+        editCategory(id,category.categoryName,category.color,category.checked)
+}
+
+export function addCategory(name:string, color:string, checked:number|boolean)
 {
     const c = checked ? 1 : 0;
     db.transaction(tx=>{
@@ -42,11 +53,11 @@ export function addCategory(name:string, color:string, checked:boolean|null)
     })
 }
 
-export function editCategory(id:number, name:string, color:string, checked:boolean|null)
+export function editCategory(id:number, name:string, color:string, checked:number|boolean)
 {
     const c = checked ? 1 : 0;
     db.transaction(tx=>{
-        tx.executeSql(`UPDATE SET CATEGORY categoryName = ?, color = ?, checked = ? WHERE id = ?`,[name,color,c,id],
+        tx.executeSql(`UPDATE CATEGORY SET categoryName = ?, color = ?, checked = ? WHERE id = ?`,[name,color,c,id],
         (tx,res)=>{
             console.log("Success")
         },(tx,err)=>{
@@ -86,6 +97,22 @@ export async function getCategory(id:number):Promise<ICategory>
                 resolve(ret);
             },(tx,err)=>{
                 console.log(err)
+                return false;
+            })
+        })
+    })
+}
+
+export async function deleteCategory(id:number):Promise<boolean>
+{
+    return new Promise((resolve,reject)=>{
+        db.transaction(tx=>{
+            tx.executeSql(`DELETE FROM CATEGORY WHERE id = ?`,[id],
+            (tx,res)=>{
+                resolve(true)
+            },(tx,err)=>{
+                console.log(err)
+                reject(false)
                 return false;
             })
         })

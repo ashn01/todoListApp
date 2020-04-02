@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import 'react-native-gesture-handler';
-import {createDrawerNavigator,DrawerContentScrollView, DrawerItemList, DrawerItem} from '@react-navigation/drawer';
-import {SwipeListView} from 'react-native-swipe-list-view'
-import {View, StyleSheet,  TouchableOpacity, TouchableHighlight} from 'react-native'
+import {createDrawerNavigator,DrawerContentScrollView} from '@react-navigation/drawer';
 
-import { Content, ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
+import { ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
 
 // screens
 import Todo from './screens/Todo';
@@ -17,40 +15,40 @@ import { RootState } from './modules';
 import ICategory from './interfaces/ICategory'
 import { useNavigation } from '@react-navigation/native';
 
+// db
+import {editCategory} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props)
 {
-  // to display categories on panel
-  const categories:ICategory[] = useSelector((state:RootState)=>state.category.categories);
+  const allCategories:ICategory[] = useSelector((state:RootState)=>state.category.categories);
   // to set selected category's background
   const selectedCategoryId:number = useSelector((state:RootState)=>state.category.categoryId)
   const dispatch = useDispatch()
   const navigation = useNavigation();
 
-  const [update,setUpdate] = useState(0) // force update
-
   React.useEffect(()=>{
-    console.log("category changes")
-  },[update])
+    
+  },[allCategories])
 
   const addCategory = () =>{
     navigation.navigate('EditCategory',{categoryId:-1})
   }
 
   const selectCategory = (id:number) =>{
-      console.log(id)
       dispatch(selectedCategory(id))
       props.navigation.closeDrawer()
   }
 
   const checkCategory = (id:number)=>{
-    var category = categories.find(c=>c.id === id)
-    category.checked = category.checked == 0 ? 1 : 0
+    // update redux
+    var category = allCategories.find(c=>c.id === id)
+    category.checked = !category.checked
     dispatch(setCategory(category))
 
-    setUpdate(update+1);// force update
+    // update database
+    editCategory(id,category.categoryName,category.color,category.checked);
   }
 
   return (
@@ -73,10 +71,10 @@ function CustomDrawerContent(props)
           </Body>
         </ListItem>
         { 
-          categories.map((v,i)=>{
+          allCategories.map((v,i)=>{
             return (
               <ListItem key={i} onPress={() => selectCategory(v.id)}>
-                <CheckBox checked={v.checked === 1} onPress={()=>checkCategory(v.id)}/>
+                <CheckBox checked={v.checked == true} onPress={()=>checkCategory(v.id)}/>
                 <Body>
                   <Text>{v.categoryName}</Text>
                 </Body>

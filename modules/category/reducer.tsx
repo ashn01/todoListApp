@@ -1,5 +1,12 @@
 import { Category, initialState } from './types';
-import {CategoryAction, SELECTED_CATEGORY, SET_CATEGORIES, SET_CATEGORY} from './actions';
+import {
+    CategoryAction, 
+    SELECTED_CATEGORY, 
+    SET_CATEGORIES, 
+    SET_CATEGORY, 
+    ADD_CATEGORY,
+    DELETE_CATEGORY
+} from './actions';
 
 
 function navigation(state: Category = initialState, action: CategoryAction) : Category{
@@ -15,11 +22,20 @@ function navigation(state: Category = initialState, action: CategoryAction) : Ca
                 categories : action.payload
             }
         case SET_CATEGORY:
-            var list = state.categories
-            list.map(c=>c.id === action.payload.id ? c = action.payload : c)
             return {
                 ...state,
-                [action.payload.id] : action.payload
+                categories : state.categories.map(c => c.id === action.payload.id ? action.payload : c)
+            }
+        case ADD_CATEGORY:
+            return {
+                ...state,
+                categories: state.categories.concat(action.payload)
+            }
+        case DELETE_CATEGORY:
+            return {
+                ...state,
+                categoryId:0,
+                categories: state.categories.filter(c=>c.id !== action.payload)
             }
         default:
             return state;
