@@ -18,21 +18,21 @@ import { Switch } from 'react-native-gesture-handler';
 export default function EditTodo({route, navigation})
 {
     const {todoId} = route.params
-    const [todo, setTodo] = useState<ITodo>(dummy.find(t=>t.ID == todoId));
+    const [todo, setTodo] = useState<ITodo>(dummy.find(t=>t.id == todoId));
     const [showPicker, setShowPicker] = useState(false);
     const [mode, setMode] = useState('date')
 
     React.useEffect(()=>{
-        setTodo(dummy.find(t=>t.ID == todoId));
+        setTodo(dummy.find(t=>t.id == todoId));
     },[todoId])
 
     const onChangeDate = (event, selectedDate:Date) => {
-        var date:Date = selectedDate || todo.TodoDeadline
+        var date:Date = selectedDate || todo.todoDeadline
         if(mode === 'date')
         {
             setShowPicker(Platform.OS === 'ios');
             setMode('time')
-            setTodo({ ...todo, TodoDeadline: date })
+            setTodo({ ...todo, todoDeadline: date })
             setShowPicker(true);
         }
         else if( mode === 'time')
@@ -43,12 +43,12 @@ export default function EditTodo({route, navigation})
 
     // set Time
     const onChangeTime = (selectedDate:Date) =>{
-        var date:Date = selectedDate || todo.TodoDeadline
+        var date:Date = selectedDate || todo.todoDeadline
         date.setHours (selectedDate.getHours())
         date.setMinutes(selectedDate.getMinutes())
         setShowPicker(Platform.OS === 'ios');
         setMode('date')
-        setTodo({ ...todo, TodoDeadline: date })
+        setTodo({ ...todo, todoDeadline: date })
 
     }
 
@@ -56,7 +56,7 @@ export default function EditTodo({route, navigation})
         var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-        var d = todo.TodoDeadline
+        var d = todo.todoDeadline
         var doW = days[d.getDay()]
         var mon = months[d.getMonth()]
         var day = d.getDate()
@@ -80,7 +80,7 @@ export default function EditTodo({route, navigation})
                 </Left>
                 <Body>
                     <Title>Edit Todo</Title>
-                    <Subtitle>{todo.TodoName}</Subtitle>
+                    <Subtitle>{todo.todoName}</Subtitle>
                 </Body>
                 <Right>
                     <Button>
@@ -98,15 +98,15 @@ export default function EditTodo({route, navigation})
                                     <Item stackedLabel>
                                         <Label>Todo Title</Label>
                                         <Input
-                                            value={todo.TodoName}
-                                            onChangeText={(text) => setTodo({ ...todo, TodoName: text })} />
+                                            value={todo.todoName}
+                                            onChangeText={(text) => setTodo({ ...todo, todoName: text })} />
                                     </Item>
                                 </Col>
                                 <Col style={{ width: '25%' }}>
                                     <Item stackedLabel>
                                         <Label>Completed</Label>
-                                        <Switch value={todo.TodoCompleted} 
-                                                onValueChange={(v) => setTodo({ ...todo, TodoCompleted: v })}
+                                        <Switch value={todo.todoCompleted == 1} 
+                                                onValueChange={(v) => setTodo({ ...todo, todoCompleted: v })}
                                                 style={{height:50}}></Switch>
                                     </Item>
                                 </Col>
@@ -121,7 +121,7 @@ export default function EditTodo({route, navigation})
                                     showPicker &&
                                     (<DateTimePicker
                                         timeZoneOffsetInMinutes={0}
-                                        value={todo.TodoDeadline}
+                                        value={todo.todoDeadline}
                                         mode={mode as any}
                                         display='default'
                                         onChange={onChangeDate}
@@ -132,8 +132,8 @@ export default function EditTodo({route, navigation})
                             <Item stackedLabel>
                                 <Label>Description</Label>
                                 <Input
-                                    value={todo.TodoDescription} multiline={true}
-                                    onChangeText={(text) => setTodo({ ...todo, TodoDescription: text })} />
+                                    value={todo.todoDescription} multiline={true}
+                                    onChangeText={(text) => setTodo({ ...todo, todoDescription: text })} />
                             </Item>
                         </Col>
                         <Col style={{ width: '5%' }} />

@@ -13,10 +13,12 @@ export default function FooterBar() {
     const dispatch = useDispatch();
 
     const handleTodo=()=>{
+        console.log("Todo")
         dispatch(currentRoute("Todo"))
     }
 
     const handleCompleted=()=>{
+        console.log("Completed")
         dispatch(currentRoute("Completed"))
         
     }

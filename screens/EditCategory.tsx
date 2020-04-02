@@ -27,8 +27,6 @@ export default function EditCategory({route, navigation})
 {
     // get category id from param
     const {categoryId} = route.params
-    // get callback function
-    const {setUpdate} = route.params
     // get category from redux
     const selectedCategory:ICategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id == categoryId))
     // set category from redux. if it is undefined, set initialstate

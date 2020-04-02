@@ -6,8 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../modules';
 
-import {dummy} from '../dummyData/dummyTodo'
-import {category} from '../dummyData/dummyCategory'
+// db
+import {addTodo, getAllTodos, getTodos, updateTodo} from '../helper/sqlite'
+
+import ITodo from '../interfaces/ITodo';
 
 export default function TodoLists()
 {
@@ -16,19 +18,61 @@ export default function TodoLists()
     // get Current route exp) todo or completed
     const curRoute = useSelector((state:RootState)=>state.navigation.route) 
     // get selected category to generate proper todos being contained by the selected category
-    const selectedCategory = useSelector((state:RootState)=>state.category.categoryId)
+    const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
+    
+    
+    
+    const [todos,setTodos] = useState<ITodo[]>([]);
+
 
     // todo text
     const [todoText, setTodoText] = useState('');
 
-    const addTodo =() =>{
-        console.log(todoText);
-        setTodoText(''); // empty todo field
+    React.useEffect(()=>{
+        initTodos();  
+    },[])
+
+    React.useEffect(()=>{
+        initTodos();  
+    },[selectedCategoryId])
+
+    const initTodos = async ()=>{
+        if(selectedCategoryId === 0) // select all
+        {
+            const todos = await getAllTodos();
+            setTodos(todos);
+        }
+        else // select any specific
+        {
+            const todos = await getTodos(selectedCategoryId);
+            setTodos(todos);
+        }
+    }
+
+    const createTodo =async() =>{
+        const newTodo:ITodo = { key:null, 
+                                id:null, 
+                                todoName:todoText, 
+                                todoDescription:"", 
+                                todoDeadline:new Date(), 
+                                todoCompleted: false, 
+                                categoryId:selectedCategoryId,
+                                color:null }
+        setTodoText("");
+        var id = await addTodo(newTodo);
+        initTodos()
     }
 
     const editTodo = (id:number) =>{
         console.log(id)
         navigation.navigate('EditTodo',{todoId:id})
+    }
+
+    const toggleCheckBox = (id:number) =>{
+        const todo = todos.find(t=>t.id == id)
+        todo.todoCompleted = !todo.todoCompleted
+        updateTodo(todo);
+        initTodos();
     }
     return (
         <Content>
@@ -38,92 +82,51 @@ export default function TodoLists()
                         <Input placeholder='Click here to add a todo' 
                         value={todoText}
                         onChangeText={(e)=>setTodoText(e)}
-                        onSubmitEditing={()=>addTodo()}/>
+                        onSubmitEditing={()=>createTodo()}/>
                     </Body>
                     <Right>
-                        <Button transparent onPress={() => addTodo()}>
+                        <Button transparent onPress={() => createTodo()}>
                             <Icon name='md-add' />
                         </Button>
                     </Right>
                 </ListItem>
-                {   false&&
-                    dummy.map((v,i)=>{
-                        let cate = category.find(c => c.id == v.NewCategoryId)
-                        if(selectedCategory === 0)// all checked
-                        {
-                            if (cate.checked === false)
-                                return null;
-
-                            if (curRoute === "Todo" && v.TodoCompleted === false) {
-                                return (
-                                    <ListItem noIndent key={i}>
-                                        <CheckBox checked={false} />
-                                        <Body>
-                                            <Text>{v.TodoName}</Text>
-                                        </Body>
-                                        <Right>
-                                            <Button transparent onPress={() => editTodo(v.ID)}>
-                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
-                                                <Icon name='ios-arrow-forward' />
-                                            </Button>
-                                        </Right>
-                                    </ListItem>
-                                )
-                            } else if (curRoute === "Completed" && v.TodoCompleted === true) {
-                                return (
-                                    <ListItem noIndent key={i}>
-                                        <CheckBox checked={true} />
-                                        <Body>
-                                            <Text>{v.TodoName}</Text>
-                                        </Body>
-                                        <Right>
-                                            <Button transparent onPress={() => editTodo(v.ID)}>
-                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
-                                                <Icon name='ios-arrow-forward' />
-                                            </Button>
-                                        </Right>
-                                    </ListItem>
-                                )
-                            }
-                            else
-                                return null;
+                {   
+                    todos.map((v,i)=>{
+                        if (curRoute == "Todo" && v.todoCompleted == 0) {
+                            return (
+                                <ListItem noIndent key={i}>
+                                    <CheckBox checked={v.todoCompleted != 0} onPress={()=>toggleCheckBox(v.id)}/>
+                                    <Body>
+                                        <Text>{v.todoName}</Text>
+                                    </Body>
+                                    <Right>
+                                        <Button transparent onPress={() => editTodo(v.id)}>
+                                            <Icon name='md-square' style={{ color: v.color , marginRight: 0 }} />
+                                            <Icon name='ios-arrow-forward' />
+                                        </Button>
+                                    </Right>
+                                </ListItem>
+                            )
+                        } else if (curRoute == "Completed" && v.todoCompleted == 1) {
+                            return (
+                                <ListItem noIndent key={i}>
+                                    <CheckBox checked={v.todoCompleted == 1} onPress={()=>toggleCheckBox(v.id)}/>
+                                    <Body>
+                                        <Text>{v.todoName}</Text>
+                                    </Body>
+                                    <Right>
+                                        <Button transparent onPress={() => editTodo(v.id)}>
+                                            <Icon name='md-square' style={{ color: v.color , marginRight: 0 }} />
+                                            <Icon name='ios-arrow-forward' />
+                                        </Button>
+                                    </Right>
+                                </ListItem>
+                            )
                         }
-                        else// selected specific category
+                        else
                         {
-                            if (v.NewCategoryId === selectedCategory && curRoute === "Todo" && v.TodoCompleted === false) {
-                                return (
-                                    <ListItem noIndent key={i}>
-                                        <CheckBox checked={false} />
-                                        <Body>
-                                            <Text>{v.TodoName}</Text>
-                                        </Body>
-                                        <Right>
-                                            <Button transparent onPress={() => editTodo(v.ID)}>
-                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
-                                                <Icon name='ios-arrow-forward' />
-                                            </Button>
-                                        </Right>
-                                    </ListItem>
-                                )
-                            } else if (v.NewCategoryId === selectedCategory && curRoute === "Completed" && v.TodoCompleted === true) {
-                                return (
-                                    <ListItem noIndent key={i}>
-                                        <CheckBox checked={true} />
-                                        <Body>
-                                            <Text>{v.TodoName}</Text>
-                                        </Body>
-                                        <Right>
-                                            <Button transparent onPress={() => editTodo(v.ID)}>
-                                                <Icon name='md-square' style={{ color: cate.color, marginRight: 0 }} />
-                                                <Icon name='ios-arrow-forward' />
-                                            </Button>
-                                        </Right>
-                                    </ListItem>
-                                )
-                            }
-                            else
-                                return null;
-                        }                        
+                            return null;
+                        }
                     })
                 }
             </List>
