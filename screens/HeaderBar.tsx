@@ -15,13 +15,13 @@ export default function HeaderBar() {
     // selected category Id to be used edit category, and remove category
     const selectedCategoryId:number = useSelector((state:RootState)=>state.category.categoryId)
     // selected category for its name on title
-    const selectedCategory:ICategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id === selectedCategoryId))
+    const categories:ICategory[] = useSelector((state:RootState)=>state.category.categories)
     const [title, setTitle] = useState('');
     const dispatch = useDispatch()
 
     React.useEffect(()=>{
         setHeader();
-    },[selectedCategoryId])
+    },[selectedCategoryId,categories])
 
     const editCategory=()=>{
         navigation.navigate('EditCategory',{categoryId:selectedCategoryId})
@@ -31,7 +31,11 @@ export default function HeaderBar() {
         if(selectedCategoryId === 0)
             setTitle("ALL");
         else
-            setTitle(selectedCategory.categoryName);
+        {
+            const selected = categories.find(c=>c.id === selectedCategoryId)
+            setTitle(selected.categoryName);
+
+        }
     }
 
     const removeCategory= ()=>{
