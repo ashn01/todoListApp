@@ -1,10 +1,10 @@
 import ITodo from './ITodo'
 
 export default interface ICategory {
-    key:string,
-    ID : number, // unique
-    CategoryName : string,
+    key:string|null,
+    id : number|null, // unique
+    categoryName : string,
     color:string,
-    checked:boolean, // checked to be shown
+    checked:boolean|number, // checked to be shown
     Owner : string | null
 }

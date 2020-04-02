@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { StyleSheet} from 'react-native';
 import {Container, Drawer} from 'native-base';
 
-import SideBar from './SideBar'
 import HeaderBar from './HeaderBar'
 import TodoLists from './TodoLists'
 import FooterBar from './FooterBar'

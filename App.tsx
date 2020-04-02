@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
 import { StatusBar } from 'react-native'; // to hide status bar
 
 // redux
@@ -14,27 +12,29 @@ import Main from './Main'
 const store = createStore(rootReducer);
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(false);
-
   React.useEffect(()=>{
     StatusBar.setHidden(true);
-    async function loadFont(){
-      console.log("async")
-      await Font.loadAsync({
-        Roboto: require("native-base/Fonts/Roboto.ttf"),
-        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-      });
-      setIsLoading(true);
-    };
-    loadFont();
-  }, [])
-
-  if(!isLoading)
-    return <AppLoading/>
-  else
+  })
     return (
       <Provider store={store}>
         <Main/>
       </Provider>
     );
 }
+
+/*
+
+app opening => load all categories and todos
+
+running => {
+	add category => save and load from DB and set state
+	delete category => save and load from DB and set state
+	edit category => save and load from DB and set state
+	
+	add todo => save and load from DB and set state
+	delete todo => save and load from DB and set state
+  edit todo => save and load from DB and set state
+  
+} if any performance issues, save DB and set state
+
+*/

@@ -46,9 +46,9 @@ export default function TodoLists()
                         </Button>
                     </Right>
                 </ListItem>
-                {
+                {   false&&
                     dummy.map((v,i)=>{
-                        let cate = category.find(c => c.ID == v.NewCategoryId)
+                        let cate = category.find(c => c.id == v.NewCategoryId)
                         if(selectedCategory === 0)// all checked
                         {
                             if (cate.checked === false)

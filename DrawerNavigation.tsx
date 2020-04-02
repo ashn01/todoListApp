@@ -1,39 +1,54 @@
 import React, { useState } from 'react';
 import 'react-native-gesture-handler';
-import {createDrawerNavigator,DrawerContentScrollView, DrawerItemList, DrawerItem} from '@react-navigation/drawer';
-import {SwipeListView} from 'react-native-swipe-list-view'
-import {View, StyleSheet,  TouchableOpacity, TouchableHighlight} from 'react-native'
+import {createDrawerNavigator,DrawerContentScrollView} from '@react-navigation/drawer';
 
-import { Content, ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
+import { ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
 
 // screens
 import Todo from './screens/Todo';
 
 // redux
 import {useDispatch,useSelector} from 'react-redux'
-import {selectedCategory} from './modules/category/actions'
+import {selectedCategory, setCategory} from './modules/category/actions'
 import { RootState } from './modules';
 
-// category
-import {category} from './dummyData/dummyCategory'
+import ICategory from './interfaces/ICategory'
+import { useNavigation } from '@react-navigation/native';
+
+// db
+import {editCategory} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props)
 {
-  React.useEffect(()=>{
-  },[])
-  const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
+  const allCategories:ICategory[] = useSelector((state:RootState)=>state.category.categories);
+  // to set selected category's background
+  const selectedCategoryId:number = useSelector((state:RootState)=>state.category.categoryId)
   const dispatch = useDispatch()
+  const navigation = useNavigation();
+
+  React.useEffect(()=>{
+    
+  },[allCategories])
 
   const addCategory = () =>{
-      console.log(props.navigation)
+    navigation.navigate('EditCategory',{categoryId:-1})
   }
 
   const selectCategory = (id:number) =>{
-      console.log(id)
       dispatch(selectedCategory(id))
       props.navigation.closeDrawer()
+  }
+
+  const checkCategory = (id:number)=>{
+    // update redux
+    var category = allCategories.find(c=>c.id === id)
+    category.checked = !category.checked
+    dispatch(setCategory(category))
+
+    // update database
+    editCategory(id,category.categoryName,category.color,category.checked);
   }
 
   return (
@@ -55,16 +70,16 @@ function CustomDrawerContent(props)
             <Text>All</Text>
           </Body>
         </ListItem>
-        {
-          category.map((v,i)=>{
+        { 
+          allCategories.map((v,i)=>{
             return (
-              <ListItem key={i} onPress={() => selectCategory(v.ID)}>
-                <CheckBox checked={v.checked} />
+              <ListItem key={i} onPress={() => selectCategory(v.id)}>
+                <CheckBox checked={v.checked == true} onPress={()=>checkCategory(v.id)}/>
                 <Body>
-                  <Text>{v.CategoryName}</Text>
+                  <Text>{v.categoryName}</Text>
                 </Body>
                 <Right>
-                  <Icon name='md-square' style={{ color: v.color, paddingLeft: 10, paddingRight: 10 }} />
+                  <Icon name='md-square' style={{ color: v.color, paddingLeft: 10, paddingRight: 10}} />
                 </Right>
               </ListItem>
             )
@@ -82,67 +97,3 @@ export default function MainNavigation() {
         </Drawer.Navigator>
     );
 }
-
-/*
-
-const styles = StyleSheet.create({
-  rowBack: {
-      alignItems: 'center',
-      backgroundColor: '#FFFFFF',
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingLeft: 15,
-  },
-  backRightBtn: {
-      alignItems: 'center',
-      bottom: 0,
-      justifyContent: 'center',
-      position: 'absolute',
-      top: 0,
-      width: 50,
-  },
-  backRightBtnLeft: {
-      backgroundColor: 'blue',
-      right: 50,
-  },
-  backRightBtnRight: {
-      backgroundColor: 'red',
-      right: 0,
-  },
-});
-
-<SwipeListView onTouchStart={()=>console.log("touched")} onScroll={()=>console.log("EndCapture")} onTouchEnd={()=>console.log("touchEnd")}
-        data={category}
-        renderItem={(data, rowMap) => (
-            <ListItem style={{ backgroundColor: '#FFFFFF' }} onPress={() => selectCategory(data.item.ID)}>
-              <CheckBox checked={data.item.checked} />
-              <Body>
-                <Text>{data.item.CategoryName}</Text>
-              </Body>
-              <Right>
-                <Icon name='md-square' style={{ color: data.item.color, paddingLeft: 10, paddingRight: 10 }} />
-              </Right>
-            </ListItem>
-        )}
-        renderHiddenItem={(data, rowMap) => (
-          <View style={styles.rowBack}>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnLeft]}
-            >
-              <Icon name="md-create" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnRight]}
-            >
-              <Icon name="md-trash" />
-            </TouchableOpacity>
-          </View>
-        )}
-        rightOpenValue={-100}
-        closeOnRowPress
-        closeOnRowOpen
-        closeOnRowBeginSwipe
-        disableRightSwipe
-      />
-*/

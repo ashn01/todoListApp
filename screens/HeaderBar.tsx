@@ -1,25 +1,42 @@
-import React from 'react'
-import {Button, Icon, Left, Body, Title, Right,Header, Drawer } from 'native-base';
+import React, { useState } from 'react'
+import {Button, Icon, Left, Body, Title, Right,Header, Drawer, Root } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 
-import { useSelector } from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux'
 import { RootState } from '../modules';
+import {deleteCategory as delCategory} from '../modules/category/actions'
 
-
-import {category} from '../dummyData/dummyCategory'
-
+import {deleteCategory} from '../helper/sqlite'
+import ICategory from '../interfaces/ICategory';
 
 export default function HeaderBar() {
     // a hook which gives access to the navigation object
     const navigation = useNavigation(); 
-    const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
+    // selected category Id to be used edit category, and remove category
+    const selectedCategoryId:number = useSelector((state:RootState)=>state.category.categoryId)
+    // selected category for its name on title
+    const selectedCategory:ICategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id === selectedCategoryId))
+    const [title, setTitle] = useState('');
+    const dispatch = useDispatch()
+
+    React.useEffect(()=>{
+        setHeader();
+    },[selectedCategoryId])
 
     const editCategory=()=>{
-        console.log("editCategory")
+        navigation.navigate('EditCategory',{categoryId:selectedCategoryId})
     }
 
-    const deleteCategory=()=>{
-        console.log("deleteCategory")
+    const setHeader= async ()=>{
+        if(selectedCategoryId === 0)
+            setTitle("ALL");
+        else
+            setTitle(selectedCategory.categoryName);
+    }
+
+    const removeCategory= ()=>{
+        deleteCategory(selectedCategoryId)
+        dispatch(delCategory(selectedCategoryId))
     }
 
     return (
@@ -32,18 +49,25 @@ export default function HeaderBar() {
             <Body>
                 <Title>
                     {
-                        selectedCategoryId === 0 ? "ALL" :
-                        category.find(c => c.ID === selectedCategoryId).CategoryName
+                        title
                     }
                 </Title>
             </Body>
             <Right>
-                <Button transparent onPress={()=>editCategory()}>
-                    <Icon name='md-create' />
-                </Button>
-                <Button transparent onPress={()=>deleteCategory()}>
-                    <Icon name='md-trash' />
-                </Button>
+            {
+                // All category cannot be editted and deleted
+                selectedCategoryId !== 0 &&
+                (
+                    <>
+                        <Button transparent onPress={() => editCategory()}>
+                            <Icon name='md-create' />
+                        </Button>
+                        <Button transparent onPress={() => removeCategory()}>
+                            <Icon name='md-trash' />
+                        </Button>
+                    </>
+                )
+            }
             </Right>
         </Header>
     );
