@@ -4,11 +4,12 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import {Platform} from 'react-native'
 
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import { RootState } from '../modules';
+import {updateTodo} from '../modules/todo/actions'
 
-
-import {dummy} from '../dummyData/dummyTodo'
+// db
+import {updateTodo as dbUpdateTodo} from '../helper/sqlite'
 
 // interface
 import ITodo from '../interfaces/ITodo'
@@ -18,12 +19,16 @@ import { Switch } from 'react-native-gesture-handler';
 export default function EditTodo({route, navigation})
 {
     const {todoId} = route.params
-    const [todo, setTodo] = useState<ITodo>(dummy.find(t=>t.id == todoId));
+    const todos = useSelector((state:RootState)=>state.todo.todos)
+    const [todo, setTodo] = useState<ITodo>(todos.find(t=>t.id == todoId));
     const [showPicker, setShowPicker] = useState(false);
     const [mode, setMode] = useState('date')
 
+    const dispatch = useDispatch();
+    
+
     React.useEffect(()=>{
-        setTodo(dummy.find(t=>t.id == todoId));
+        setTodo(todos.find(t=>t.id == todoId))
     },[todoId])
 
     const onChangeDate = (event, selectedDate:Date) => {
@@ -69,6 +74,14 @@ export default function EditTodo({route, navigation})
 
         return doW+", "+mon+" "+day+", "+year+"  "+hour+":"+min+" "+ampm
     }
+
+    const editTodo = () =>{
+        // update db
+        updateTodo(todo)
+        // update redux
+        dispatch(updateTodo(todo))
+        navigation.goBack();
+    }
     
     return (
         <Container>
@@ -83,7 +96,7 @@ export default function EditTodo({route, navigation})
                     <Subtitle>{todo.todoName}</Subtitle>
                 </Body>
                 <Right>
-                    <Button>
+                    <Button onPress={()=>editTodo()}>
                         <Icon name='md-checkmark'/>
                     </Button>
                 </Right>

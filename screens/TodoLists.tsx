@@ -20,7 +20,7 @@ export default function TodoLists()
     const curRoute = useSelector((state:RootState)=>state.navigation.route) 
     // get selected category to generate proper todos being contained by the selected category
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
-    
+    const allCategoryies = useSelector((state:RootState)=>state.category.categories)
     const allTodos = useSelector((state:RootState)=>state.todo.todos)
     
     const dispatch = useDispatch()
@@ -34,7 +34,7 @@ export default function TodoLists()
 
     React.useEffect(()=>{
         initTodos();  
-    },[selectedCategoryId])
+    },[selectedCategoryId, allCategoryies])
 
     // get data from db and store redux
     const initTodos = async ()=>{
@@ -58,14 +58,13 @@ export default function TodoLists()
                                 todoDeadline:new Date(), 
                                 todoCompleted: false, 
                                 categoryId:selectedCategoryId,
-                                color:null }
+                            }
         setTodoText("");
         var id = await addTodo(newTodo);
         initTodos()
     }
 
     const editTodo = (id:number) =>{
-        console.log(id)
         navigation.navigate('EditTodo',{todoId:id})
     }
 
@@ -75,6 +74,14 @@ export default function TodoLists()
         todo.todoCompleted = !todo.todoCompleted
         updateTodo(todo);
         initTodos();
+    }
+
+    const getColor = (id:number)=>{
+        const category = allCategoryies.find(c=>c.id == id)
+        if(category !== undefined)
+            return category.color
+        else
+            return '#ffffff'
     }
     return (
         <Content>
@@ -103,7 +110,7 @@ export default function TodoLists()
                                     </Body>
                                     <Right>
                                         <Button transparent onPress={() => editTodo(v.id)}>
-                                            <Icon name='md-square' style={{ color: v.color , marginRight: 0 }} />
+                                            <Icon name='md-square' style={{ color: getColor(v.categoryId) , marginRight: 0 }} />
                                             <Icon name='ios-arrow-forward' />
                                         </Button>
                                     </Right>
@@ -118,7 +125,7 @@ export default function TodoLists()
                                     </Body>
                                     <Right>
                                         <Button transparent onPress={() => editTodo(v.id)}>
-                                            <Icon name='md-square' style={{ color: v.color , marginRight: 0 }} />
+                                            <Icon name='md-square' style={{ color: getColor(v.categoryId) , marginRight: 0 }} />
                                             <Icon name='ios-arrow-forward' />
                                         </Button>
                                     </Right>

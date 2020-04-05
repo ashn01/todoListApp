@@ -6,6 +6,5 @@ export default interface ITodo {
     todoDescription : string,
     todoDeadline : Date,
     todoCompleted : boolean | number,
-    color: string | null,
     categoryId : number
 }
