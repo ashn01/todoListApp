@@ -6,12 +6,10 @@ import {createStackNavigator } from '@react-navigation/stack';
 // load font
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import { StatusBar } from 'react-native'; // to hide status bar
 
 // redux
 import {useDispatch} from 'react-redux';
 import { setCategories } from './modules/category/actions';
-
 
 // sqlite
 import {createTables, getCategories} from './helper/sqlite'
@@ -40,7 +38,6 @@ export default function Main() {
     const dispatch = useDispatch();
   
     React.useEffect(()=>{
-      StatusBar.setHidden(true);
       async function load(){
         console.log("load font")
         await Font.loadAsync({
@@ -56,9 +53,8 @@ export default function Main() {
           // get categories and store to redux
           const categories = await getCategories();
           dispatch(setCategories(categories));
+          setIsLoading(true);
         }
-  
-        setIsLoading(true);
       };
       load();
     }, [])

@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text } from 'native-base'
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle } from 'native-base'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import {Platform} from 'react-native'
+import { Switch } from 'react-native-gesture-handler';
 
+// redux
 import {useSelector, useDispatch} from 'react-redux'
 import { RootState } from '../modules';
 import {updateTodo} from '../modules/todo/actions'
@@ -13,7 +15,6 @@ import {updateTodo as dbUpdateTodo} from '../helper/sqlite'
 
 // interface
 import ITodo from '../interfaces/ITodo'
-import { Switch } from 'react-native-gesture-handler';
 
 
 export default function EditTodo({route, navigation})
@@ -77,7 +78,7 @@ export default function EditTodo({route, navigation})
 
     const editTodo = () =>{
         // update db
-        updateTodo(todo)
+        dbUpdateTodo(todo)
         // update redux
         dispatch(updateTodo(todo))
         navigation.goBack();

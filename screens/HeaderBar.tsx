@@ -2,11 +2,15 @@ import React, { useState } from 'react'
 import {Button, Icon, Left, Body, Title, Right,Header, Drawer, Root } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 
+// redux
 import {useDispatch,useSelector} from 'react-redux'
 import { RootState } from '../modules';
-import {deleteCategory as delCategory} from '../modules/category/actions'
+import {deleteCategory} from '../modules/category/actions'
 
-import {deleteCategory} from '../helper/sqlite'
+// db
+import {deleteCategory as dbDeleteCategory} from '../helper/sqlite'
+
+// interface
 import ICategory from '../interfaces/ICategory';
 
 export default function HeaderBar() {
@@ -38,8 +42,10 @@ export default function HeaderBar() {
     }
 
     const removeCategory= ()=>{
-        deleteCategory(selectedCategoryId)
-        dispatch(delCategory(selectedCategoryId))
+        // update db
+        dbDeleteCategory(selectedCategoryId)
+        // update redux
+        dispatch(deleteCategory(selectedCategoryId))
     }
 
     return (

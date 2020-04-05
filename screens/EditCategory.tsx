@@ -3,9 +3,9 @@ import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Conte
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { TriangleColorPicker, toHsv, fromHsv, HsvColor } from 'react-native-color-picker'
 
+// redux
 import {useDispatch,useSelector} from 'react-redux'
 import {addCategory, updateCategory, selectedCategory as selectCategory} from '../modules/category/actions'
-
 import { RootState } from '../modules';
 
 // db
@@ -34,10 +34,6 @@ export default function EditCategory({route, navigation})
     const [category, setCategory] = useState<ICategory>(selectedCategory || initialState);
 
     const dispatch = useDispatch();
-
-    React.useEffect(()=>{
-        
-    },[categoryId])
 
     const editCategory = async ()=>{
         if(categoryId === -1)

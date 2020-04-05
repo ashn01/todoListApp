@@ -20,12 +20,14 @@ export default function TodoLists()
     const curRoute = useSelector((state:RootState)=>state.navigation.route) 
     // get selected category to generate proper todos being contained by the selected category
     const selectedCategoryId = useSelector((state:RootState)=>state.category.categoryId)
+    // get all categories to display color
     const allCategoryies = useSelector((state:RootState)=>state.category.categories)
+    // get all todos to display in list
     const allTodos = useSelector((state:RootState)=>state.todo.todos)
     
     const dispatch = useDispatch()
 
-    // todo text
+    // todo text for new todo
     const [todoText, setTodoText] = useState('');
 
     React.useEffect(()=>{
@@ -59,16 +61,16 @@ export default function TodoLists()
                                 todoCompleted: false, 
                                 categoryId:selectedCategoryId,
                             }
-        setTodoText("");
+        setTodoText(""); // reset input field
         var id = await addTodo(newTodo);
         initTodos()
     }
 
-    const editTodo = (id:number) =>{
+    const editTodo = (id:number) =>{ // navigate to edit todo page
         navigation.navigate('EditTodo',{todoId:id})
     }
 
-    const toggleCheckBox = (id:number) =>{
+    const toggleCheckBox = (id:number) =>{ // fired when user click checkbox
         // database
         const todo = allTodos.find(t=>t.id == id)
         todo.todoCompleted = !todo.todoCompleted
@@ -76,13 +78,14 @@ export default function TodoLists()
         initTodos();
     }
 
-    const getColor = (id:number)=>{
+    const getColor = (id:number)=>{ // get correspond color from categories
         const category = allCategoryies.find(c=>c.id == id)
         if(category !== undefined)
             return category.color
         else
-            return '#ffffff'
+            return '#ffffff' // undefiend means 'ALL' 
     }
+
     return (
         <Content>
             <List>
@@ -121,7 +124,7 @@ export default function TodoLists()
                                 <ListItem noIndent key={i}>
                                     <CheckBox checked={v.todoCompleted == 1} onPress={()=>toggleCheckBox(v.id)}/>
                                     <Body>
-                                        <Text>{v.todoName}</Text>
+                                        <Text style={{textDecorationLine:'line-through'}}>{v.todoName}</Text>
                                     </Body>
                                     <Right>
                                         <Button transparent onPress={() => editTodo(v.id)}>
