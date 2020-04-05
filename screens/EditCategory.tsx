@@ -40,6 +40,7 @@ export default function EditCategory({route, navigation})
         {
             // insert database
             var id = await insertCategory(category);
+            category.id = id
             // update redux
             dispatch(addCategory(category))
             dispatch(selectCategory(id))
