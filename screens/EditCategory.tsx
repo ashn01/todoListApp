@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react'
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text } from 'native-base'
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text, View } from 'native-base'
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import { TriangleColorPicker, toHsv, fromHsv, HsvColor } from 'react-native-color-picker'
 
+// redux
 import {useDispatch,useSelector} from 'react-redux'
 import {addCategory, updateCategory, selectedCategory as selectCategory} from '../modules/category/actions'
-
 import { RootState } from '../modules';
 
 // db
@@ -34,10 +35,6 @@ export default function EditCategory({route, navigation})
 
     const dispatch = useDispatch();
 
-    React.useEffect(()=>{
-        
-    },[categoryId])
-
     const editCategory = async ()=>{
         if(categoryId === -1)
         {
@@ -56,6 +53,7 @@ export default function EditCategory({route, navigation})
         }
         navigation.goBack();
     }
+
     return (
         <Container>
             <Header>
@@ -92,6 +90,15 @@ export default function EditCategory({route, navigation})
                                     value={category.color}
                                     onChangeText={(text) => setCategory({ ...category, color: text })} />
                             </Item>
+                            <View style={{height:300}}>
+                                <TriangleColorPicker
+                                    defaultColor='#000000'
+                                    color={category.color}
+                                    onColorChange={color => setCategory({ ...category, color: fromHsv(color) })}
+                                    onColorSelected={color => console.log("a"+color)}
+                                    style={{flex:1}}
+                                />
+                            </View>
                         </Col>
                         <Col style={{ width: '5%' }} />
                     </Row>

@@ -28,11 +28,12 @@ export async function createTables():Promise<boolean> {
             tx.executeSql(`INSERT OR IGNORE INTO CATEGORY (id, categoryName, color, checked) VALUES (0, 'All', '#ffffff', 1)`,[],
             (tx,res)=>{
                 console.log('Success Add All category')
+                resolve(true);
             },(tx,err)=>{
                 console.log(err)
+                reject(false);
                 return false
             })
-            resolve(true);
         })
     })
 }
