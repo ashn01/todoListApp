@@ -1,10 +1,11 @@
 
 export default interface ITodo {
-    key:string,
-    ID : number | null,
-    TodoName : string,
-    TodoDescription : string,
-    TodoDeadline : Date,
-    TodoCompleted : boolean,
-    NewCategoryId : number
+    key:string | null,
+    id : number | null,
+    todoName : string,
+    todoDescription : string,
+    todoDeadline : Date,
+    todoCompleted : boolean | number,
+    color: string | null,
+    categoryId : number
 }

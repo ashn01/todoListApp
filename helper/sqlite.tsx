@@ -1,9 +1,11 @@
 import * as SQLite from 'expo-sqlite'
 import ICategory  from '../interfaces/ICategory'
+import ITodo from '../interfaces/ITodo'
 
 
 const db = SQLite.openDatabase('doobido.db')
 
+// Tables
 export async function createTables():Promise<boolean> {
     return new Promise((resolve, reject)=>{
         db.transaction(tx => {
@@ -21,48 +23,75 @@ export async function createTables():Promise<boolean> {
                     todoDeadline DATE,
                     todoCompleted BOOLEAN,
                     categoryId INTEGER,
-                    FOREIGN KEY (categoryID) REFERENCES category(id)
+                    FOREIGN KEY (categoryId) REFERENCES category(id)
                     );`);
+            tx.executeSql(`INSERT OR IGNORE INTO CATEGORY (id, categoryName, color, checked) VALUES (0, 'All', '#ffffff', 1)`,[],
+            (tx,res)=>{
+                console.log('Success Add All category')
+            },(tx,err)=>{
+                console.log(err)
+                return false
+            })
             resolve(true);
         })
     })
 }
 
-export function addOrEditCategory(id:number, category:ICategory)
-{
-    console.log(id)
-    console.log(category)
-    const c = category.checked ? 1 : 0;
-    if(id === -1) // add
-        addCategory(category.categoryName,category.color,category.checked)
-    else // edit
-        editCategory(id,category.categoryName,category.color,category.checked)
-}
-
-export function addCategory(name:string, color:string, checked:number|boolean)
-{
-    const c = checked ? 1 : 0;
-    db.transaction(tx=>{
-        tx.executeSql(`INSERT INTO CATEGORY (categoryName, color, checked) VALUES (?,?,?);`,[name,color,c],
-        (tx,res)=>{
-            console.log("Success")
-        },(tx,err)=>{
-            console.log(err)
-            return false;
+export function checkTable(){
+    console.log("check table")
+    db.transaction(tx => {
+        tx.executeSql(`SELECT sql FROM sqlite_master WHERE type='table' AND name='todo'`,[],(tx,results)=>{
+            console.log("table")
+            var temp = [];
+            for(let i=0;i<results.rows.length;++i)
+            {
+                temp.push(results.rows.item(i))
+                console.log(temp[i])
+            }
+            console.log("Result rows: "+results.rows.length)
         })
     })
 }
 
-export function editCategory(id:number, name:string, color:string, checked:number|boolean)
+export function dropTables(){
+    db.transaction(tx => {
+        tx.executeSql(`drop table if exists category;`);
+        tx.executeSql(`drop table if exists todo;`);
+    })
+}
+
+// Categories
+export function insertCategory(category:ICategory):Promise<number>
 {
-    const c = checked ? 1 : 0;
-    db.transaction(tx=>{
-        tx.executeSql(`UPDATE CATEGORY SET categoryName = ?, color = ?, checked = ? WHERE id = ?`,[name,color,c,id],
-        (tx,res)=>{
-            console.log("Success")
-        },(tx,err)=>{
-            console.log(err)
-            return false;
+    return new Promise((resolve,reject)=>{
+        const c = category.checked ? 1 : 0;
+        db.transaction(tx=>{
+            tx.executeSql(`INSERT INTO CATEGORY (categoryName, color, checked) VALUES (?,?,?);`,[category.categoryName,category.color,c],
+            (tx,res)=>{
+                console.log("Success insertCategory")
+                resolve(res.insertId)
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
+        })
+    })
+}
+
+export function updateCategory(category:ICategory):Promise<boolean>
+{
+    return new Promise((resolve,reject)=>{
+        const c = category.checked ? 1 : 0;
+        db.transaction(tx=>{
+            tx.executeSql(`UPDATE CATEGORY SET categoryName = ?, color = ?, checked = ? WHERE id = ?`,
+            [category.categoryName,category.color,c,category.id],
+            (tx,res)=>{
+                console.log("Success updateCategory")
+                resolve(true)
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
         })
     })
 }
@@ -71,9 +100,9 @@ export async function getCategories():Promise<ICategory[]>
 {
     return new Promise((resolve,reject)=>{
         db.transaction( tx=>{
-            tx.executeSql(`SELECT * FROM CATEGORY`,[],
+            tx.executeSql(`SELECT * FROM CATEGORY WHERE id != 0`,[],
             (tx,res)=>{
-                console.log("Success")
+                console.log("Success getCategories")
                 var ret = [];
                 for(let i=0;i<res.rows.length;++i)
                     ret.push(res.rows.item(i))
@@ -119,6 +148,88 @@ export async function deleteCategory(id:number):Promise<boolean>
     })
 }
 
+// Todos
+export function addTodo(todo:ITodo):Promise<number>
+{
+    return new Promise((resolve,reject)=>{
+        const c = todo.todoCompleted ? 1 : 0;
+        console.log(todo)
+        db.transaction(tx=>{
+            tx.executeSql(`INSERT INTO TODO (todoName, todoDescription, todoDeadline, todoCompleted, categoryId) VALUES (?,?,?,?,?);`,
+            [todo.todoName,todo.todoDescription,todo.todoDeadline.toISOString(),c,todo.categoryId],
+                            (tx,res)=>{
+                                console.log("Success addTodo")
+                                resolve(res.insertId)
+                            },(tx,err)=>{
+                                console.log("Error")
+                                console.log(err)
+                                return false;
+                            })
+        })
+    })
+}
+
+export function getAllTodos():Promise<ITodo[]>
+{
+    return new Promise((resolve, reject)=>{
+        db.transaction(tx=>{
+            tx.executeSql(`SELECT t.id, t.todoName, t.todoDescription, t.todoDeadline, t.todoCompleted, t.categoryId , c.color FROM TODO t, CATEGORY c WHERE t.categoryId = c.id AND t.categoryId IN (SELECT id FROM CATEGORY WHERE checked = 1);`,[],
+            (tx,res)=>{
+                console.log("Success getAllTodos")
+                var ret = [];
+                for(let i=0;i<res.rows.length;++i)
+                {
+                    res.rows.item(i).todoDeadline = new Date(res.rows.item(i).todoDeadline); // back to date?
+                    ret.push(res.rows.item(i))
+                }
+                resolve(ret);
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
+        })
+    })
+}
+
+export function getTodos(id:number):Promise<ITodo[]>
+{
+    return new Promise((resolve,reject)=>{
+        db.transaction(tx=>{
+            tx.executeSql(`SELECT t.id, t.todoName, t.todoDescription, t.todoDeadline, t.todoCompleted, t.categoryId , c.color FROM TODO t, CATEGORY c WHERE t.categoryId = c.id AND t.categoryId = ?;`,[id],
+            (tx,res)=>{
+                console.log("Success getTodos")
+                var ret = [];
+                for(let i=0;i<res.rows.length;++i){
+                    res.rows.item(i).todoDeadline = new Date(res.rows.item(i).todoDeadline); // back to date?
+                    ret.push(res.rows.item(i))
+                }
+                resolve(ret);
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
+        })
+    })
+}
+export function updateTodo(todo:ITodo):Promise<boolean>
+{
+    return new Promise((resolve,reject)=>{
+        const c = todo.todoCompleted ? 1 : 0;
+        db.transaction(tx=>{
+            tx.executeSql(`UPDATE TODO SET todoName = ?, todoDescription = ?, todoDeadline = ?, todoCompleted = ?, categoryId = ? WHERE id = ?;`,
+            [todo.todoName, todo.todoDescription, todo.todoDeadline.toISOString(), c, todo.categoryId, todo.id],
+            (tx,res)=>{
+                console.log("Success updateTodo")
+                resolve(true);
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
+        })
+    })
+}
+
+// test
 export function test(str:string){
     console.log("insert")
     db.transaction(tx => {
@@ -145,28 +256,5 @@ export function test(str:string){
             }
             console.log("Result rows: "+results.rows.length)
         })
-    })
-}
-
-export function checkTable(){
-    console.log("check table")
-    db.transaction(tx => {
-        tx.executeSql(`SELECT sql FROM sqlite_master WHERE type='table' AND name='category'`,[],(tx,results)=>{
-            console.log("table")
-            var temp = [];
-            for(let i=0;i<results.rows.length;++i)
-            {
-                temp.push(results.rows.item(i))
-                console.log(temp[i])
-            }
-            console.log("Result rows: "+results.rows.length)
-        })
-    })
-}
-
-export function dropTables(){
-    db.transaction(tx => {
-        tx.executeSql(`drop table if exists category;`);
-        tx.executeSql(`drop table if exists todo;`);
     })
 }

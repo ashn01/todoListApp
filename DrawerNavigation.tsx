@@ -10,13 +10,14 @@ import Todo from './screens/Todo';
 // redux
 import {useDispatch,useSelector} from 'react-redux'
 import {selectedCategory, updateCategory} from './modules/category/actions'
+import {setTodos} from './modules/todo/actions'
 import { RootState } from './modules';
 
 import ICategory from './interfaces/ICategory'
 import { useNavigation } from '@react-navigation/native';
 
 // db
-import {editCategory} from './helper/sqlite'
+import {updateCategory as dbUpdateCategory, getAllTodos} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
@@ -41,14 +42,18 @@ function CustomDrawerContent(props)
       props.navigation.closeDrawer()
   }
 
-  const checkCategory = (id:number)=>{
+  const checkCategory = async (id:number)=>{
     // update redux
     var category = allCategories.find(c=>c.id === id)
     category.checked = !category.checked
     dispatch(updateCategory(category))
 
     // update database
-    editCategory(id,category.categoryName,category.color,category.checked);
+    const v = await dbUpdateCategory(category);
+
+    // update todo redux
+    const todos = await getAllTodos();
+    dispatch(setTodos(todos))
   }
 
   return (

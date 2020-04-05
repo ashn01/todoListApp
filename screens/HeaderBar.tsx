@@ -34,7 +34,6 @@ export default function HeaderBar() {
         {
             const selected = categories.find(c=>c.id === selectedCategoryId)
             setTitle(selected.categoryName);
-
         }
     }
 
