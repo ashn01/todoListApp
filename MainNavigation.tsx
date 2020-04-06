@@ -5,10 +5,10 @@ import {Ionicons} from '@expo/vector-icons'; // use Icons
 import { AppLoading } from 'expo';
 
 // screens
-import Todo from './screens/Todo';
+import Home from './screens/Home';
 
 
-/*
+/*./screens/Home
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
  *  Both of them are React components used for configuring the navigator. 
  *  The Navigator should contain Screen elements as its children to define the configuration for routes.
@@ -46,8 +46,8 @@ export default function MainNavigation() {
             inactiveTintColor: 'gray',
           }}
         >
-          <Tab.Screen name="Todo" component={Todo} options={{ title: 'Todo' }} />
-          <Tab.Screen name="Completed" component={Todo} />
+          <Tab.Screen name="Todo" component={Home} options={{ title: 'Todo' }} />
+          <Tab.Screen name="Completed" component={Home} />
         </Tab.Navigator>
     );
 }

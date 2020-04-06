@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
 
 // screens
-import Todo from './screens/Todo';
+import Todo from './screens/Home';
 
 // redux
 import {useDispatch,useSelector} from 'react-redux'

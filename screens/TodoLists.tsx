@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body, Input} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 
+import Todo from './Todo'
+
 // redux
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../modules';
@@ -11,6 +13,7 @@ import { setTodos } from '../modules/todo/actions'
 import {addTodo, getAllTodos, getTodos, updateTodo} from '../helper/sqlite'
 
 import ITodo from '../interfaces/ITodo';
+import { initialState } from '../modules/navigation/types';
 
 export default function TodoLists()
 {
@@ -52,6 +55,14 @@ export default function TodoLists()
         }
     }
 
+    const getColor = (id:number)=>{ // get correspond color from categories
+        const category = allCategoryies.find(c=>c.id == id)
+        if(category !== undefined)
+            return category.color
+        else
+            return '#ffffff' // undefiend means 'ALL' 
+    }
+
     const createTodo =async() =>{
         const newTodo:ITodo = { key:null, 
                                 id:null, 
@@ -64,26 +75,6 @@ export default function TodoLists()
         setTodoText(""); // reset input field
         var id = await addTodo(newTodo);
         initTodos()
-    }
-
-    const editTodo = (id:number) =>{ // navigate to edit todo page
-        navigation.navigate('EditTodo',{todoId:id})
-    }
-
-    const toggleCheckBox = (id:number) =>{ // fired when user click checkbox
-        // database
-        const todo = allTodos.find(t=>t.id == id)
-        todo.todoCompleted = !todo.todoCompleted
-        updateTodo(todo);
-        initTodos();
-    }
-
-    const getColor = (id:number)=>{ // get correspond color from categories
-        const category = allCategoryies.find(c=>c.id == id)
-        if(category !== undefined)
-            return category.color
-        else
-            return '#ffffff' // undefiend means 'ALL' 
     }
 
     return (
@@ -106,33 +97,11 @@ export default function TodoLists()
                     allTodos.map((v,i)=>{
                         if (curRoute == "Todo" && v.todoCompleted == 0) {
                             return (
-                                <ListItem noIndent key={i}>
-                                    <CheckBox checked={v.todoCompleted != 0} onPress={()=>toggleCheckBox(v.id)}/>
-                                    <Body>
-                                        <Text>{v.todoName}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => editTodo(v.id)}>
-                                            <Icon name='md-square' style={{ color: getColor(v.categoryId) , marginRight: 0 }} />
-                                            <Icon name='ios-arrow-forward' />
-                                        </Button>
-                                    </Right>
-                                </ListItem>
+                                <Todo key={i} color={getColor(v.categoryId)} init={initTodos} todo={v}/>
                             )
                         } else if (curRoute == "Completed" && v.todoCompleted == 1) {
                             return (
-                                <ListItem noIndent key={i}>
-                                    <CheckBox checked={v.todoCompleted == 1} onPress={()=>toggleCheckBox(v.id)}/>
-                                    <Body>
-                                        <Text style={{textDecorationLine:'line-through'}}>{v.todoName}</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent onPress={() => editTodo(v.id)}>
-                                            <Icon name='md-square' style={{ color: getColor(v.categoryId) , marginRight: 0 }} />
-                                            <Icon name='ios-arrow-forward' />
-                                        </Button>
-                                    </Right>
-                                </ListItem>
+                                <Todo key={i} color={getColor(v.categoryId)} init={initTodos} todo={v}/>
                             )
                         }
                         else
