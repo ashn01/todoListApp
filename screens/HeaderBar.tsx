@@ -85,6 +85,8 @@ export default function HeaderBar() {
 
 const styles = StyleSheet.create({
     background:{
-        backgroundColor:'red'
+        backgroundColor:'#ab7fbb'
     }
 })
+
+//877fbd
