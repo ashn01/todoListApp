@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body, Input} from 'native-base'
+import {Animated, StyleSheet, View} from 'react-native'
+import { ListItem, Text, Right, Icon, Button, CheckBox, Body, Item} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
+import Swipeable from 'react-native-gesture-handler/Swipeable'
 
 import ITodo from '../interfaces/ITodo'
 
 // db
-import {updateTodo} from '../helper/sqlite'
+import {updateTodo, deleteTodo as dbDeleteTodo} from '../helper/sqlite'
 
 type TodoProps = {
     init : ()=>void,
@@ -13,6 +15,10 @@ type TodoProps = {
     color: string
 }
 
+type SwipeableProps = {
+    progress: Animated.AnimatedInterpolation,
+    dragX: Animated.AnimatedInterpolation
+}
 
 export default function Todo({init, todo, color}: TodoProps)
 {
@@ -30,18 +36,68 @@ export default function Todo({init, todo, color}: TodoProps)
         init();
     }
 
-    return (
-        <ListItem noIndent>
-            <CheckBox checked={todo.todoCompleted != 0} onPress={() => toggleCheckBox(todo.id)} />
-            <Body>
-                <Text style={{textDecorationLine:todo.todoCompleted == 1 ? 'line-through':'none'}}>{todo.todoName}</Text>
-            </Body>
-            <Right>
-                <Button transparent onPress={() => editTodo()}>
-                    <Icon name='md-square' style={{ color: color, marginRight: 0 }} />
-                    <Icon name='ios-arrow-forward' />
+    const deleteTodo = () =>{
+        dbDeleteTodo(todo);
+        init();
+    }
+
+    const RightAction = (progress, dragX)=>{
+        return (
+            <Item style={styles.actionView}>
+                <Button style={[styles.actionButton, styles.actionEdit]} onPress={() => editTodo()}>
+                    <Icon name='md-create' style={styles.actionIcon} />
                 </Button>
-            </Right>
-        </ListItem>
+                <Button style={[styles.actionButton, styles.actionDelete]} onPress={() => deleteTodo()}>
+                    <Icon name='md-trash' style={styles.actionIcon} />
+                </Button>
+            </Item>
+        )
+    }
+
+    return (
+        <Swipeable
+            renderRightActions={(p, d) => RightAction(p, d)}
+            overshootRight={false}
+        >
+            <ListItem noIndent style={styles.list} onLongPress={()=>editTodo()}>
+                <CheckBox checked={todo.todoCompleted != 0} onPress={() => toggleCheckBox(todo.id)} />
+                <Body>
+                    <Text style={{ textDecorationLine: todo.todoCompleted == 1 ? 'line-through' : 'none' }}>{todo.todoName}</Text>
+                </Body>
+                <Right>
+                    <Button transparent >
+                        <Icon name='md-square' style={{ color: color}} />
+                    </Button>
+                </Right>
+            </ListItem>
+        </Swipeable>
     )
 }
+
+const styles = StyleSheet.create({
+    list: {
+        backgroundColor:'white'
+    },
+    actionView :{
+        width:'30%'
+    },
+    actionButton : {
+        width: '50%',
+        height: '100%',
+        justifyContent: 'center',
+        margin: 'auto'
+    },
+    actionEdit : {
+        backgroundColor: '#2bc26c',
+        borderTopRightRadius : 0,
+        borderBottomRightRadius : 0,
+    },
+    actionDelete : {
+        backgroundColor: '#eb4034',
+        borderTopLeftRadius : 0,
+        borderBottomLeftRadius : 0,
+    },
+    actionIcon : {
+        color:'white'
+    },
+})

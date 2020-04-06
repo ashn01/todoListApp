@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import {StyleSheet} from 'react-native'
 import {Button, Icon, Left, Body, Title, Right,Header, Drawer, Root } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 
@@ -49,7 +50,7 @@ export default function HeaderBar() {
     }
 
     return (
-        <Header>
+        <Header style={styles.background}>
             <Left>
                 <Button transparent onPress={()=>navigation.openDrawer()}>
                     <Icon name='menu' />
@@ -81,3 +82,9 @@ export default function HeaderBar() {
         </Header>
     );
 }
+
+const styles = StyleSheet.create({
+    background:{
+        backgroundColor:'red'
+    }
+})
