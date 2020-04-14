@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
-import {Button, Icon, Left, Body, Title, Right,Header, Drawer, Root } from 'native-base';
+import {Button, Icon, Left, Body, Title, Right,Header, Toast, ActionSheet } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
+
+// styles
+import styles from '../helper/styles'
 
 // redux
 import {useDispatch,useSelector} from 'react-redux'
@@ -42,14 +45,30 @@ export default function HeaderBar() {
     }
 
     const removeCategory= ()=>{
-        // update db
-        dbDeleteCategory(selectedCategoryId)
-        // update redux
-        dispatch(deleteCategory(selectedCategoryId))
+        ActionSheet.show({
+            options: ["Delete", "Cancel"],
+            cancelButtonIndex: 1,
+            destructiveButtonIndex: 0,
+            title: "Delete Category"
+        },
+            buttonIndex => {
+                if (buttonIndex === 0) { // select Delete
+                    // update db
+                    dbDeleteCategory(selectedCategoryId)
+                    // update redux
+                    dispatch(deleteCategory(selectedCategoryId))
+                    // show toast
+                    Toast.show({
+                        text: 'Category Deleted!',
+                        buttonText: 'Close',
+                        duration: 2000
+                    })
+                }
+            })
     }
 
     return (
-        <Header>
+        <Header style={styles.headerBackground}>
             <Left>
                 <Button transparent onPress={()=>navigation.openDrawer()}>
                     <Icon name='menu' />
@@ -81,3 +100,6 @@ export default function HeaderBar() {
         </Header>
     );
 }
+
+
+//877fbd

@@ -77,7 +77,7 @@ function CustomDrawerContent(props)
         { 
           allCategories.map((v,i)=>{
             return (
-              <ListItem key={i} onPress={() => selectCategory(v.id)}>
+              <ListItem key={i} onPress={() => selectCategory(v.id)} style={{backgroundColor:'#'}}>
                 <CheckBox checked={v.checked == true} onPress={()=>checkCategory(v.id)}/>
                 <Body>
                   <Text>{v.categoryName}</Text>

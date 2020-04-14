@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body, Input} from 'native-base'
+import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body, Input, Toast} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 
 import Todo from './Todo'
@@ -75,6 +75,13 @@ export default function TodoLists()
         setTodoText(""); // reset input field
         var id = await addTodo(newTodo);
         initTodos()
+        // show toast
+        Toast.show({
+            text:'Todo Added!',
+            buttonText:'Close',
+            type:'success',
+            duration:2000
+        })
     }
 
     return (

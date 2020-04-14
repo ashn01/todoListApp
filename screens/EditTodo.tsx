@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle } from 'native-base'
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Toast } from 'native-base'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import {Platform} from 'react-native'
 import { Switch } from 'react-native-gesture-handler';
+
+// styles
+import styles from '../helper/styles'
 
 // redux
 import {useSelector, useDispatch} from 'react-redux'
@@ -77,6 +80,13 @@ export default function EditTodo({route, navigation})
     }
 
     const editTodo = () =>{
+        // show toast
+        Toast.show({
+            text:'Todo saved!',
+            buttonText:'Close',
+            type:'success',
+            duration:2000
+        })
         // update db
         dbUpdateTodo(todo)
         // update redux
@@ -86,9 +96,9 @@ export default function EditTodo({route, navigation})
     
     return (
         <Container>
-            <Header>
+            <Header style={styles.headerBackground}>
                 <Left>
-                    <Button onPress={()=>navigation.goBack()}>
+                    <Button transparent onPress={()=>navigation.goBack()}>
                         <Icon name='ios-arrow-back'/>
                     </Button>
                 </Left>
@@ -97,7 +107,7 @@ export default function EditTodo({route, navigation})
                     <Subtitle>{todo.todoName}</Subtitle>
                 </Body>
                 <Right>
-                    <Button onPress={()=>editTodo()}>
+                    <Button transparent onPress={()=>editTodo()}>
                         <Icon name='md-checkmark'/>
                     </Button>
                 </Right>

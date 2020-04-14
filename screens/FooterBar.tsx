@@ -2,6 +2,8 @@ import React from 'react'
 import {Button, Icon, Text, Footer, FooterTab } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 
+import {StyleSheet} from 'react-native'
+
 import { useSelector, useDispatch } from 'react-redux';
 import { currentRoute } from '../modules/navigation/actions';
 import { RootState } from '../modules';
@@ -13,23 +15,21 @@ export default function FooterBar() {
     const dispatch = useDispatch();
 
     const handleTodo=()=>{
-        console.log("Todo")
         dispatch(currentRoute("Todo"))
     }
 
     const handleCompleted=()=>{
-        console.log("Completed")
         dispatch(currentRoute("Completed"))
         
     }
     return (
-        <Footer>
-            <FooterTab>
-                <Button vertical active={curRoute==="Todo" ? true : false} onPress={()=>handleTodo()}>
+        <Footer >
+            <FooterTab style={styles.background}>
+                <Button vertical style={styles.background} active={curRoute==="Todo" ? true : false} onPress={()=>handleTodo()}>
                     <Icon name="apps"/>
                     <Text>Todo</Text>
                 </Button>
-                <Button vertical active={curRoute==="Completed" ? true : false} onPress={()=>handleCompleted()}>
+                <Button vertical style={styles.background} active={curRoute==="Completed" ? true : false} onPress={()=>handleCompleted()}>
                     <Icon name="navigate"/>
                     <Text>Completed</Text>
                 </Button>
@@ -38,3 +38,10 @@ export default function FooterBar() {
         </Footer>
     );
 }
+
+
+const styles = StyleSheet.create({
+    background:{
+        backgroundColor:'#877fbd'
+    }
+})

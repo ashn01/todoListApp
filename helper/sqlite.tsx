@@ -230,6 +230,22 @@ export function updateTodo(todo:ITodo):Promise<boolean>
     })
 }
 
+export function deleteTodo(todo:ITodo):Promise<boolean>
+{
+    return new Promise((resolve,reject)=>{
+        db.transaction(tx=>{
+            tx.executeSql(`DELETE FROM TODO WHERE id = ?`,[todo.id],
+            (tx,res)=>{
+                console.log("Success deleteTodo")
+                resolve(true);
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
+        })
+    })
+}
+
 // test
 export function test(str:string){
     console.log("insert")
