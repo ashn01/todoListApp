@@ -1,5 +1,6 @@
 import React from 'react';
 
+import {Root} from 'native-base'
 import { StatusBar } from 'react-native'; // to hide status bar
 
 // redux
@@ -17,7 +18,10 @@ export default function App() {
   })
     return (
       <Provider store={store}>
+        <Root>
         <Main/>
+
+        </Root>
       </Provider>
     );
 }

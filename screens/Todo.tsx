@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {Animated, StyleSheet, View} from 'react-native'
-import { ListItem, Text, Right, Icon, Button, CheckBox, Body, Item} from 'native-base'
+import { ListItem, Text, Right, Icon, Button, CheckBox, Body, Item, Toast, ActionSheet} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 
@@ -15,18 +15,15 @@ type TodoProps = {
     color: string
 }
 
-type SwipeableProps = {
-    progress: Animated.AnimatedInterpolation,
-    dragX: Animated.AnimatedInterpolation
-}
-
 export default function Todo({init, todo, color}: TodoProps)
 {
     // navigation hook to open modals
     const navigation = useNavigation()
+    const itemRef = useRef(null);
 
     const editTodo = () =>{ // navigate to edit todo page
         navigation.navigate('EditTodo',{todoId:todo.id})
+        itemRef.current.close();
     }
 
     const toggleCheckBox = (id:number) =>{ // fired when user click checkbox
@@ -34,11 +31,28 @@ export default function Todo({init, todo, color}: TodoProps)
         todo.todoCompleted = !todo.todoCompleted
         updateTodo(todo);
         init();
+        // show toast
+        Toast.show({
+            text:todo.todoCompleted ? "Todo completed!" : "Todo incompleted!",
+            buttonText:'Close',
+            duration:2000
+        })
     }
 
     const deleteTodo = () =>{
-        dbDeleteTodo(todo);
-        init();
+        ActionSheet.show({
+            options: ["Delete", "Cancel"],
+            cancelButtonIndex: 1,
+            destructiveButtonIndex: 0,
+            title: "Delete Todo"
+        },
+        buttonIndex=>{
+            if(buttonIndex===0){ // delete todo
+                itemRef.current.close();
+                dbDeleteTodo(todo);
+                init();
+            }
+        })
     }
 
     const RightAction = (progress, dragX)=>{
@@ -58,6 +72,7 @@ export default function Todo({init, todo, color}: TodoProps)
         <Swipeable
             renderRightActions={(p, d) => RightAction(p, d)}
             overshootRight={false}
+            ref={itemRef}
         >
             <ListItem noIndent style={styles.list} onLongPress={()=>editTodo()}>
                 <CheckBox checked={todo.todoCompleted != 0} onPress={() => toggleCheckBox(todo.id)} />

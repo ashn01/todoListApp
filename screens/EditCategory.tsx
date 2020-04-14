@@ -1,7 +1,11 @@
 import React, { useState, useCallback } from 'react'
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text, View } from 'native-base'
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text, View, Toast } from 'native-base'
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { TriangleColorPicker, toHsv, fromHsv, HsvColor } from 'react-native-color-picker'
+import {StyleSheet} from 'react-native'
+
+// styles
+import styles from '../helper/styles'
 
 // redux
 import {useDispatch,useSelector} from 'react-redux'
@@ -19,7 +23,7 @@ const initialState: ICategory = {
     id:null,
     key:null,
     categoryName:"",
-    color:"",
+    color:"#000",
     checked:0,
     Owner:null
 }
@@ -38,6 +42,13 @@ export default function EditCategory({route, navigation})
     const editCategory = async ()=>{
         if(categoryId === -1)
         {
+            // show toast
+            Toast.show({
+                text:'Category Added!',
+                buttonText:'Close',
+                type:'success',
+                duration:2000
+            })
             // insert database
             var id = await insertCategory(category);
             category.id = id
@@ -47,6 +58,13 @@ export default function EditCategory({route, navigation})
         }
         else
         {
+            // show toast
+            Toast.show({
+                text:'Category Modified!',
+                buttonText:'Close',
+                type:'success',
+                duration:2000
+            })
             // update database
             dbUpdateCategory(category)
             // update redux
@@ -57,9 +75,9 @@ export default function EditCategory({route, navigation})
 
     return (
         <Container>
-            <Header>
+            <Header style={styles.headerBackground}>
                 <Left>
-                    <Button onPress={()=>navigation.goBack()}>
+                    <Button transparent onPress={()=>navigation.goBack()}>
                         <Icon name='ios-arrow-back'/>
                     </Button>
                 </Left>
@@ -68,7 +86,7 @@ export default function EditCategory({route, navigation})
                     <Subtitle>{category.categoryName}</Subtitle>
                 </Body>
                 <Right>
-                    <Button onPress={()=>editCategory()}>
+                    <Button transparent onPress={()=>editCategory()}>
                         <Icon name='md-checkmark'/>
                     </Button>
                 </Right>
