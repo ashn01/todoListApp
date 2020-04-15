@@ -27,12 +27,13 @@ const initialState: ICategory = {
     Owner:null
 }
 
-export default function EditCategory({route, navigation})
+export default function EditCategory({route, navigation}:any)
 {
     // get category id from param
     const {categoryId} = route.params
     // get category from redux
-    const selectedCategory:ICategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id == categoryId))
+    // this can be ICategory or undefined
+    const selectedCategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id == categoryId))
     // set category from redux. if it is undefined, set initialstate
     const [category, setCategory] = useState<ICategory>(selectedCategory || initialState);
 

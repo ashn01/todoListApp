@@ -1,5 +1,3 @@
-import ITodo from './ITodo'
-
 export default interface ICategory {
     key:string|null,
     id : number|null, // unique

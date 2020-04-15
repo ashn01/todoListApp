@@ -20,11 +20,12 @@ import {updateTodo as dbUpdateTodo} from '../helper/sqlite'
 import ITodo from '../interfaces/ITodo'
 
 
-export default function EditTodo({route, navigation})
+export default function EditTodo({route, navigation}:any)
 {
     const {todoId} = route.params
-    const todos = useSelector((state:RootState)=>state.todo.todos)
-    const [todo, setTodo] = useState<ITodo>(todos.find(t=>t.id == todoId));
+    const todos:ITodo[] = useSelector((state:RootState)=>state.todo.todos)
+    // no undefined
+    const [todo, setTodo] = useState<ITodo>(todos.find(t=>t.id == todoId) as ITodo);
     const [showPicker, setShowPicker] = useState(false);
     const [mode, setMode] = useState('date')
 
@@ -32,10 +33,10 @@ export default function EditTodo({route, navigation})
     
 
     React.useEffect(()=>{
-        setTodo(todos.find(t=>t.id == todoId))
+        setTodo(todos.find(t=>t.id == todoId) as ITodo)
     },[todoId])
 
-    const onChangeDate = (event, selectedDate:Date) => {
+    const onChangeDate = (selectedDate:Date) => {
         var date:Date = selectedDate || todo.todoDeadline
         if(mode === 'date')
         {
@@ -148,7 +149,7 @@ export default function EditTodo({route, navigation})
                                         value={todo.todoDeadline}
                                         mode={mode as any}
                                         display='default'
-                                        onChange={onChangeDate}
+                                        onChange={(e,d)=>onChangeDate(d as Date)}
                                     />)
                                 }
                             </Item>
