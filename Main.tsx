@@ -4,20 +4,19 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
 
 // load font
-import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
 
 // redux
 import {useDispatch} from 'react-redux';
 import { setCategories } from './modules/category/actions';
 
 // sqlite
-import {createTables, getCategories} from './helper/sqlite'
+import {createTables, getCategories, connect} from './helper/sqlite'
 
-// modal screens
+// screens
+import Loading from './Loading'
 import EditTodo from './screens/EditTodo';
 import EditCategory from './screens/EditCategory';
-import DrawerNavigation from './DrawerNavigation'
+import DrawerNavigation from './DrawerNavigation';
 
 /*
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
@@ -38,14 +37,9 @@ export default function Main() {
     const dispatch = useDispatch();
   
     React.useEffect(()=>{
-      async function load(){
-        console.log("load font")
-        await Font.loadAsync({
-          Roboto: require("native-base/Fonts/Roboto.ttf"),
-          Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-        });
-  
+      async function load(){  
         console.log("initialize DB")
+        await connect();
         const tableReady = await createTables();
         if(tableReady)
         {
@@ -60,7 +54,7 @@ export default function Main() {
     }, [])
   
     if(!isLoading)
-      return <AppLoading/>
+      return <Loading/>
     else
         return (
             <NavigationContainer >

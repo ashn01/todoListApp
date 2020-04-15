@@ -1,8 +1,7 @@
-import React, { useState, useCallback } from 'react'
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text, View, Toast } from 'native-base'
+import React, { useState } from 'react'
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, View, Toast } from 'native-base'
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { TriangleColorPicker, toHsv, fromHsv, HsvColor } from 'react-native-color-picker'
-import {StyleSheet} from 'react-native'
+import { TriangleColorPicker, fromHsv } from 'react-native-color-picker'
 
 // styles
 import styles from '../helper/styles'
@@ -39,9 +38,8 @@ export default function EditCategory({route, navigation})
 
     const dispatch = useDispatch();
 
-    const editCategory = async ()=>{
-        if(categoryId === -1)
-        {
+    const editCategory = async () => {
+        if (categoryId === -1) {
             // show toast
             Toast.show({
                 text:'Category Added!',

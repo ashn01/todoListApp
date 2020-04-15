@@ -71,7 +71,7 @@ export default function HeaderBar() {
         <Header style={styles.headerBackground}>
             <Left>
                 <Button transparent onPress={()=>navigation.openDrawer()}>
-                    <Icon name='menu' />
+                    <Icon name='home' />
                 </Button>
             </Left>
             <Body>
