@@ -22,7 +22,7 @@ import {updateCategory as dbUpdateCategory, getAllTodos} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent(props)
+function CustomDrawerContent(props:any)
 {
   // get all categories from store
   const allCategories:ICategory[] = useSelector((state:RootState)=>state.category.categories);
@@ -43,7 +43,7 @@ function CustomDrawerContent(props)
   // todos under checked categories will display in todo list when selected category is 'ALL'
   const checkCategory = async (id:number)=>{
     // update redux
-    var category = allCategories.find(c=>c.id === id)
+    var category:ICategory = allCategories.find(c=>c.id === id) as ICategory // it will return ICategory, no undefined
     category.checked = !category.checked
     dispatch(updateCategory(category))
 
@@ -77,8 +77,8 @@ function CustomDrawerContent(props)
         { 
           allCategories.map((v,i)=>{
             return (
-              <ListItem key={i} onPress={() => selectCategory(v.id)} style={{backgroundColor:'#'}}>
-                <CheckBox checked={v.checked == true} onPress={()=>checkCategory(v.id)}/>
+              <ListItem key={i} onPress={() => selectCategory(v.id as number)} style={{backgroundColor:'#'}}>
+                <CheckBox checked={v.checked == true} onPress={()=>checkCategory(v.id as number)}/>
                 <Body>
                   <Text>{v.categoryName}</Text>
                 </Body>

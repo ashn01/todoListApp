@@ -3,21 +3,21 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
 
-// load font
-import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
+// widget
+import { NativeModules } from 'react-native';
 
 // redux
 import {useDispatch} from 'react-redux';
 import { setCategories } from './modules/category/actions';
 
 // sqlite
-import {createTables, getCategories} from './helper/sqlite'
+import {createTables, getCategories, connect} from './helper/sqlite'
 
-// modal screens
+// screens
+import Loading from './Loading'
 import EditTodo from './screens/EditTodo';
 import EditCategory from './screens/EditCategory';
-import DrawerNavigation from './DrawerNavigation'
+import DrawerNavigation from './DrawerNavigation';
 
 /*
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
@@ -33,19 +33,18 @@ const Root = createStackNavigator();
  *  This component must wrap all navigators structure.
  *  Usually, we'd render this component at the root of our app, which is usually the component exported from App.js.
 */
+
+// widget
+const SharedStorage = NativeModules.SharedStorage;
+
 export default function Main() {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
   
     React.useEffect(()=>{
-      async function load(){
-        console.log("load font")
-        await Font.loadAsync({
-          Roboto: require("native-base/Fonts/Roboto.ttf"),
-          Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-        });
-  
+      async function load(){  
         console.log("initialize DB")
+        await connect();
         const tableReady = await createTables();
         if(tableReady)
         {
@@ -53,6 +52,12 @@ export default function Main() {
           // get categories and store to redux
           const categories = await getCategories();
           dispatch(setCategories(categories));
+
+          // widget
+          SharedStorage.set(
+            JSON.stringify({text: 'This is data from the React Native app!'})
+           );
+
           setIsLoading(true);
         }
       };
@@ -60,7 +65,7 @@ export default function Main() {
     }, [])
   
     if(!isLoading)
-      return <AppLoading/>
+      return <Loading/>
     else
         return (
             <NavigationContainer >

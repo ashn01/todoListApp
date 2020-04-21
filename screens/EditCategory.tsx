@@ -1,8 +1,7 @@
-import React, { useState, useCallback } from 'react'
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, Text, View, Toast } from 'native-base'
+import React, { useState } from 'react'
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Input, Content, Item, Label, Subtitle, View, Toast } from 'native-base'
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { TriangleColorPicker, toHsv, fromHsv, HsvColor } from 'react-native-color-picker'
-import {StyleSheet} from 'react-native'
+import { TriangleColorPicker, fromHsv } from 'react-native-color-picker'
 
 // styles
 import styles from '../helper/styles'
@@ -28,20 +27,20 @@ const initialState: ICategory = {
     Owner:null
 }
 
-export default function EditCategory({route, navigation})
+export default function EditCategory({route, navigation}:any)
 {
     // get category id from param
     const {categoryId} = route.params
     // get category from redux
-    const selectedCategory:ICategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id == categoryId))
+    // this can be ICategory or undefined
+    const selectedCategory = useSelector((state:RootState)=>state.category.categories.find(c=>c.id == categoryId))
     // set category from redux. if it is undefined, set initialstate
     const [category, setCategory] = useState<ICategory>(selectedCategory || initialState);
 
     const dispatch = useDispatch();
 
-    const editCategory = async ()=>{
-        if(categoryId === -1)
-        {
+    const editCategory = async () => {
+        if (categoryId === -1) {
             // show toast
             Toast.show({
                 text:'Category Added!',

@@ -1,9 +1,28 @@
-import * as SQLite from 'expo-sqlite'
+import SQLite from 'react-native-sqlite-storage'
 import ICategory  from '../interfaces/ICategory'
 import ITodo from '../interfaces/ITodo'
 
+var db:SQLite.SQLiteDatabase;
 
-const db = SQLite.openDatabase('doobido.db')
+export async function connect() {
+    return new Promise( async (resolve,reject)=>{
+        db = await SQLite.openDatabase(
+            {
+                name: 'doobido.db',
+                location: 'default',
+                createFromLocation: 1
+            },
+            () => {
+                console.log('connected to DB');
+                resolve()
+            }, err => {
+                console.log(err)
+                reject()
+            }
+        );
+
+    })
+}
 
 // Tables
 export async function createTables():Promise<boolean> {

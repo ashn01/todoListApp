@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Root} from 'native-base'
-import { StatusBar } from 'react-native'; // to hide status bar
+import { StatusBar, Animated } from 'react-native'; // to hide status bar
 
 // redux
 import {Provider} from 'react-redux';
@@ -15,6 +15,11 @@ const store = createStore(rootReducer);
 export default function App() {
   React.useEffect(()=>{
     StatusBar.setHidden(true);
+    Animated.timing(new Animated.Value(0), {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true, // <-- Add this
+    }).start();
   })
     return (
       <Provider store={store}>
@@ -25,20 +30,3 @@ export default function App() {
       </Provider>
     );
 }
-
-/*
-
-app opening => load all categories and todos
-
-running => {
-	add category => save and load from DB and set state
-	delete category => save and load from DB and set state
-	edit category => save and load from DB and set state
-	
-	add todo => save and load from DB and set state
-	delete todo => save and load from DB and set state
-  edit todo => save and load from DB and set state
-  
-} if any performance issues, save DB and set state
-
-*/

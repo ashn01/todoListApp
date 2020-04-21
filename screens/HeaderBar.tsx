@@ -39,7 +39,7 @@ export default function HeaderBar() {
             setTitle("ALL");
         else
         {
-            const selected = categories.find(c=>c.id === selectedCategoryId)
+            const selected:ICategory = categories.find(c=>c.id === selectedCategoryId) as ICategory
             setTitle(selected.categoryName);
         }
     }
