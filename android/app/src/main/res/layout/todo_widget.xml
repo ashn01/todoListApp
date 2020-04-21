@@ -1,29 +1,46 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#09C"
-    android:padding="@dimen/widget_margin">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
     <TextView
-        android:id="@+id/appwidget_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="My Widget"
+        android:background="#FFF"
+        android:id="@+id/example_widget_text"
+        android:layout_above="@+id/example_widget_button"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
-    <ListView
-        android:id="@+id/widget_listview"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="3dp"
-        android:background="#ffffff"
-        android:layout_marginStart="3dp" />
-</RelativeLayout>
+
+    <Button
+        android:id="@+id/example_widget_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press me"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/example_widget_stack_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:loopViews="true"/>
+        <TextView
+            android:id="@+id/example_widget_empty_view"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Empty"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    </FrameLayout>
+</LinearLayout>

@@ -55,7 +55,7 @@ export default function Main() {
 
           // widget
           SharedStorage.set(
-            JSON.stringify({text: 'This is data from the React Native app'})
+            JSON.stringify({text: 'This is data from the React Native app!'})
            );
 
           setIsLoading(true);

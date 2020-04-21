@@ -2,10 +2,12 @@ package com.doobidoapp;
 
 public class WidgetItem {
     int _id;
-    String content;
-    public WidgetItem(int _id,String content){
+    String todoName;
+    String todoDescription;
+    public WidgetItem(int _id,String todoName,String todoDescription){
         this._id = _id;
-        this.content = content;
+        this.todoName = todoName;
+        this.todoDescription = todoDescription;
     }
     public int get_id() {
         return _id;
@@ -15,11 +17,19 @@ public class WidgetItem {
         this._id = _id;
     }
 
-    public String getContent() {
-        return content;
+    public String getTodoName() {
+        return todoName;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTodoName(String todoName) {
+        this.todoName = todoName;
+    }
+
+    public String getTodoDescription() {
+        return todoDescription;
+    }
+
+    public void setTodoDescription(String todoDescription) {
+        this.todoDescription = todoDescription;
     }
 }
