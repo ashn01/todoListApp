@@ -3,9 +3,17 @@ package com.doobidoapp;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.SystemClock;
+import android.util.Pair;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class TodoWidgetService extends RemoteViewsService {
     @Override
@@ -14,11 +22,9 @@ public class TodoWidgetService extends RemoteViewsService {
     }
 
     class TodoWidgetItemFactory implements RemoteViewsFactory{
-
         private Context context;
         private int appWidgetId;
-        private String[] exampleData = {"one","two","three","four","five","six","seven","eight","nine","ten",};
-
+        private List<WidgetItem> todos = new ArrayList<WidgetItem>();
         TodoWidgetItemFactory(Context context, Intent intent){
             this.context=context;
             this.appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -28,12 +34,36 @@ public class TodoWidgetService extends RemoteViewsService {
         @Override
         public void onCreate() {
             // connect to data source
-            SystemClock.sleep(3000);
+            loadDateFromSQLite();
+        }
+
+        private void loadDateFromSQLite() {
+            try {
+                todos.clear();
+                DBHelper helper = new DBHelper(context);
+                SQLiteDatabase db = helper.getWritableDatabase();
+
+                Cursor cursor = db.rawQuery("SELECT todoName, todoDescription FROM TODO WHERE todoCompleted = 0", null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    int i = 0;
+                    do {
+                        String todoName = cursor.getString(0);
+                        String todoDescription = cursor.getString(1);
+                        WidgetItem item = new WidgetItem(todoName,todoDescription);
+                        todos.add(item);
+                        //exampleData[i++] = todoName;
+                    } while (cursor.moveToNext());
+                    cursor.close();
+                }
+            }catch (SQLException e){
+                //exampleData[0] = "error";
+                //exampleData[1] = e.getMessage();
+            }
         }
 
         @Override
         public void onDataSetChanged() {
-
+            loadDateFromSQLite();
         }
 
         @Override
@@ -43,18 +73,18 @@ public class TodoWidgetService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            return exampleData.length;
+            return todos.size();
         }
 
         @Override
         public RemoteViews getViewAt(int position) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_collection);
-            views.setTextViewText(R.id.todo_widget_item_text, exampleData[position]);
-
-            SystemClock.sleep(500);
+            views.setTextViewText(R.id.todo_name, todos.get(position).getTodoName());
+            views.setTextViewText(R.id.todo_description, todos.get(position).getTodoDescription());
 
             return views;
         }
+
 
         @Override
         public RemoteViews getLoadingView() {

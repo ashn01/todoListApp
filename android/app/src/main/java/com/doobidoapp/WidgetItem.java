@@ -1,22 +1,12 @@
 package com.doobidoapp;
 
 public class WidgetItem {
-    int _id;
     String todoName;
     String todoDescription;
-    public WidgetItem(int _id,String todoName,String todoDescription){
-        this._id = _id;
+    public WidgetItem(String todoName,String todoDescription){
         this.todoName = todoName;
         this.todoDescription = todoDescription;
     }
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
-    }
-
     public String getTodoName() {
         return todoName;
     }

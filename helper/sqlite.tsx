@@ -10,7 +10,7 @@ export async function connect() {
             {
                 name: 'doobido.db',
                 location: 'default',
-                createFromLocation: 1
+                createFromLocation: '~www/doobido.db'
             },
             () => {
                 console.log('connected to DB');
@@ -200,6 +200,26 @@ export function getAllTodos():Promise<ITodo[]>
                 for(let i=0;i<res.rows.length;++i)
                 {
                     res.rows.item(i).todoDeadline = new Date(res.rows.item(i).todoDeadline); // back to date?
+                    ret.push(res.rows.item(i))
+                }
+                resolve(ret);
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
+        })
+    })
+}
+
+export function getAllTodosName():Promise<String[]>
+{
+    return new Promise((resolve, reject)=>{
+        db.transaction(tx=>{
+            tx.executeSql(`SELECT todoName FROM TODO WHERE todoCompleted = 0;`,[],
+            (tx,res)=>{
+                console.log("Success getAllTodosName")
+                var ret = [];
+                for(let i=0;i<res.rows.length;++i){
                     ret.push(res.rows.item(i))
                 }
                 resolve(ret);

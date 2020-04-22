@@ -3,9 +3,6 @@ import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
 
-// widget
-import { NativeModules } from 'react-native';
-
 // redux
 import {useDispatch} from 'react-redux';
 import { setCategories } from './modules/category/actions';
@@ -18,6 +15,9 @@ import Loading from './Loading'
 import EditTodo from './screens/EditTodo';
 import EditCategory from './screens/EditCategory';
 import DrawerNavigation from './DrawerNavigation';
+
+//widget
+import SendAllTodos from './helper/widgetDataHelper'
 
 /*
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
@@ -34,8 +34,6 @@ const Root = createStackNavigator();
  *  Usually, we'd render this component at the root of our app, which is usually the component exported from App.js.
 */
 
-// widget
-const SharedStorage = NativeModules.SharedStorage;
 
 export default function Main() {
     const [isLoading, setIsLoading] = useState(false);
@@ -54,9 +52,7 @@ export default function Main() {
           dispatch(setCategories(categories));
 
           // widget
-          SharedStorage.set(
-            JSON.stringify({text: 'This is data from the React Native app!'})
-           );
+          SendAllTodos();
 
           setIsLoading(true);
         }
