@@ -56,8 +56,8 @@ public class TodoAppWidgetConfig  extends AppCompatActivity {
 
 
         RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.todo_widget);
-        views.setOnClickPendingIntent(R.id.example_widget_button, pendingIntent);
-        views.setCharSequence(R.id.example_widget_button, "setText", buttonText); // send text
+        views.setOnClickPendingIntent(R.id.refresh_widget_button, pendingIntent);
+        views.setCharSequence(R.id.refresh_widget_button, "setText", buttonText); // send text
         views.setRemoteAdapter(R.id.widget_list_view, serviceIntent);
         views.setEmptyView(R.id.widget_list_view,R.id.widget_progress_bar);
 

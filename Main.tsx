@@ -15,6 +15,7 @@ import Loading from './Loading'
 import EditTodo from './screens/EditTodo';
 import EditCategory from './screens/EditCategory';
 import DrawerNavigation from './DrawerNavigation';
+import Setting from './screens/Settings'
 
 //widget
 import SendAllTodos from './helper/widgetDataHelper'
@@ -69,6 +70,7 @@ export default function Main() {
                     <Root.Screen name="Main" component={DrawerNavigation} options={{ title: 'Todo' }} />
                     <Root.Screen name="EditTodo" component={EditTodo} />
                     <Root.Screen name="EditCategory" component={EditCategory} /> 
+                    <Root.Screen name="Setting" component={Setting}/>
                 </Root.Navigator>
             </NavigationContainer>
         );

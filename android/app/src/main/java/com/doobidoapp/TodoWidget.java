@@ -22,7 +22,7 @@ public class TodoWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for(int appWidgetId : appWidgetIds){
-            Toast.makeText(context, "onUpdate", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "onUpdate", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
@@ -37,11 +37,10 @@ public class TodoWidget extends AppWidgetProvider {
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
             RemoteViews views = new RemoteViews(context.getPackageName(),R.layout.todo_widget);
-            //views.setOnClickPendingIntent(R.id.example_widget_button, pendingIntent);
-            views.setOnClickPendingIntent(R.id.example_widget_button,
-                    getPendingSelfIntent(context,UPDATE_BUTTON_CLICKED, appWidgetIds));
-            //views.setCharSequence(R.id.example_widget_button, "setText", buttonText); // name button
+            views.setOnClickPendingIntent(R.id.refresh_widget_button,
+                    getPendingSelfIntent(context,UPDATE_BUTTON_CLICKED, appWidgetIds)); // refresh
 
+            // set listview and empty
             views.setRemoteAdapter(R.id.widget_list_view,serviceIntent);
             views.setEmptyView(R.id.widget_list_view, R.id.widget_progress_bar);
 
@@ -80,9 +79,9 @@ public class TodoWidget extends AppWidgetProvider {
 
         // appear disappear by widget size
         if(maxHeight > 100){
-            views.setViewVisibility(R.id.example_widget_button, View.VISIBLE);
+            views.setViewVisibility(R.id.refresh_widget_button, View.VISIBLE);
         }else{
-            views.setViewVisibility(R.id.example_widget_button, View.GONE);
+            views.setViewVisibility(R.id.refresh_widget_button, View.GONE);
         }
 
     }
@@ -97,6 +96,7 @@ public class TodoWidget extends AppWidgetProvider {
                 int[] appWidgetIds = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 
                 if(appWidgetIds != null && appWidgetIds.length > 0) {
+                    Toast.makeText(context, "Doobido Updated", Toast.LENGTH_SHORT).show();
                     this.onUpdate(context, AppWidgetManager.getInstance(context), appWidgetIds);
                 }
             }
@@ -105,16 +105,16 @@ public class TodoWidget extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        Toast.makeText(context, "onDeleted", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "onDeleted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onEnabled(Context context) {
-        Toast.makeText(context, "onEnabled", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "onEnabled", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDisabled(Context context) {
-        Toast.makeText(context, "OnDisabled", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "OnDisabled", Toast.LENGTH_SHORT).show();
     }
 }

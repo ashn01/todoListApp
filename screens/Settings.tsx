@@ -1,11 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import {Container,Content} from 'native-base'
+import SettingHeaderBar from './SettingHeaderBar'
 
 export default function Settings({navigation}:any) {
   return (
-    <View style={styles.container}>
-      <Text>This is Settings!</Text>
-    </View>
+    <Container>
+      <SettingHeaderBar/>
+      <Content>
+
+      </Content>
+    </Container>
   );
 }
 

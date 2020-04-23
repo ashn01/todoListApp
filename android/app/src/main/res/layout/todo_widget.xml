@@ -3,13 +3,21 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
-
-    <Button
-        android:id="@+id/example_widget_button"
+    android:background="#99000000"
+    >
+    <TextView
+        android:id="@+id/category_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Press me"/>
+        />
+    <ImageButton
+        android:id="@+id/refresh_widget_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/refresh"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        />
 
     <FrameLayout
         android:layout_width="match_parent"

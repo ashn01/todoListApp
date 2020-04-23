@@ -3,7 +3,7 @@ import 'react-native-gesture-handler';
 import {createDrawerNavigator,DrawerContentScrollView} from '@react-navigation/drawer';
 
 import { useNavigation } from '@react-navigation/native';
-import { ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body } from 'native-base'
+import { ListItem, Text,List, Left, Right, Button, Icon, CheckBox, Body, Title } from 'native-base'
 
 // screens
 import Todo from './screens/Home';
@@ -16,6 +16,9 @@ import { RootState } from './modules';
 
 // interface
 import ICategory from './interfaces/ICategory'
+
+// styles
+import styles from './helper/styles'
 
 // db
 import {updateCategory as dbUpdateCategory, getAllTodos} from './helper/sqlite'
@@ -33,6 +36,12 @@ function CustomDrawerContent(props:any)
 
   const addCategory = () =>{
     navigation.navigate('EditCategory',{categoryId:-1})
+    props.navigation.closeDrawer()
+  }
+
+  const setting = () =>{
+    navigation.navigate('Setting');
+    props.navigation.closeDrawer()
   }
 
   const selectCategory = (id:number) =>{
@@ -56,18 +65,19 @@ function CustomDrawerContent(props:any)
   }
 
   return (
-    <DrawerContentScrollView {...props}>
-      <List>
-        <ListItem itemDivider>
+    <DrawerContentScrollView {...props} style={{marginTop:-4}}>
+      <List >
+        <ListItem itemDivider style={styles.headerBackground}>
           <Left>
-            <Text>Category</Text>
+            <Title>Doobido</Title>
           </Left>
           <Right>
-            <Button transparent onPress={()=>addCategory()}>
-              <Icon name="add" />
+            <Button transparent onPress={()=>setting()}>
+              <Icon name="ios-settings" style={{color:'#fff'}}/>
             </Button>
           </Right>
         </ListItem>
+        
         <ListItem noIndent onPress={() => selectCategory(0)}>
           <Icon name="ios-list" />
           <Body>
@@ -89,6 +99,13 @@ function CustomDrawerContent(props:any)
             )
           })
         }
+        <ListItem last onPress={() => addCategory()}>
+          <Left></Left>
+          <Body>
+              <Icon name="add" />
+          </Body>
+          <Right></Right>
+        </ListItem>
       </List>
     </DrawerContentScrollView>
   )

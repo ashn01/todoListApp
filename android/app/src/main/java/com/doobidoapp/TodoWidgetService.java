@@ -56,8 +56,7 @@ public class TodoWidgetService extends RemoteViewsService {
                     cursor.close();
                 }
             }catch (SQLException e){
-                //exampleData[0] = "error";
-                //exampleData[1] = e.getMessage();
+                todos.clear();
             }
         }
 

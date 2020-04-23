@@ -100,6 +100,3 @@ export default function HeaderBar() {
         </Header>
     );
 }
-
-
-//877fbd
