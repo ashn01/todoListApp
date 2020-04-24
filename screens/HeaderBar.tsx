@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {Button, Icon, Left, Body, Title, Right,Header, Toast, ActionSheet } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
 
 // styles
 import styles from '../helper/styles'
@@ -68,35 +69,35 @@ export default function HeaderBar() {
     }
 
     return (
-        <Header style={styles.headerBackground}>
-            <Left>
-                <Button transparent onPress={()=>navigation.openDrawer()}>
-                    <Icon name='menu' />
-                </Button>
-            </Left>
-            <Body>
-                <Title>
-                    {
-                        title
-                    }
-                </Title>
-            </Body>
-            <Right>
-            {
-                // All category cannot be editted and deleted
-                selectedCategoryId !== 0 &&
-                (
-                    <>
-                        <Button transparent onPress={() => editCategory()}>
-                            <Icon name='md-create' />
-                        </Button>
-                        <Button transparent onPress={() => removeCategory()}>
-                            <Icon name='md-trash' />
-                        </Button>
-                    </>
-                )
-            }
-            </Right>
-        </Header>
+            <Header style={styles.headerBackground}>
+                <Left>
+                    <Button transparent onPress={()=>navigation.openDrawer()}>
+                        <Icon name='menu' />
+                    </Button>
+                </Left>
+                <Body>
+                    <Title>
+                        {
+                            title
+                        }
+                    </Title>
+                </Body>
+                <Right>
+                {
+                    // All category cannot be editted and deleted
+                    selectedCategoryId !== 0 &&
+                    (
+                        <>
+                            <Button transparent onPress={() => editCategory()}>
+                                <Icon name='md-create' />
+                            </Button>
+                            <Button transparent onPress={() => removeCategory()}>
+                                <Icon name='md-trash' />
+                            </Button>
+                        </>
+                    )
+                }
+                </Right>
+            </Header>
     );
 }

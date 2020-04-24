@@ -3,6 +3,7 @@ package com.doobidoapp;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,9 @@ import android.os.SystemClock;
 import android.util.Pair;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +42,37 @@ public class TodoWidgetService extends RemoteViewsService {
         }
 
         private void loadDateFromSQLite() {
+            String categoryName = "";
+            String query;
+
+            try{
+                SharedPreferences pref = context.getSharedPreferences("DATA",Context.MODE_PRIVATE);
+                String appString = pref.getString("appData","{\"value\":'All'}");
+                JSONObject appData = new JSONObject(appString);
+                categoryName = appData.getString("value");
+            } catch (JSONException e){
+                categoryName="All";
+            }
+
             try {
                 todos.clear();
                 DBHelper helper = new DBHelper(context);
                 SQLiteDatabase db = helper.getWritableDatabase();
 
-                Cursor cursor = db.rawQuery("SELECT todoName, todoDescription FROM TODO WHERE todoCompleted = 0", null);
+                Cursor cursor;
+                if(categoryName.equals("All")){
+                    cursor = db.rawQuery("SELECT todoName, todoDescription " +
+                            "FROM TODO " +
+                            "WHERE todoCompleted = 0 "
+                            , null);
+                }else{
+                    cursor = db.rawQuery("SELECT t.todoName, t.todoDescription " +
+                            "FROM TODO t, CATEGORY c " +
+                            "WHERE todoCompleted = 0 " +
+                            "AND t.categoryId = c.id " +
+                            "AND c.categoryName = ?", new String[]{categoryName});
+                }
+
                 if (cursor != null && cursor.moveToFirst()) {
                     int i = 0;
                     do {

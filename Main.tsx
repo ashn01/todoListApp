@@ -17,8 +17,6 @@ import EditCategory from './screens/EditCategory';
 import DrawerNavigation from './DrawerNavigation';
 import Setting from './screens/Settings'
 
-//widget
-import SendAllTodos from './helper/widgetDataHelper'
 
 /*
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
@@ -51,9 +49,6 @@ export default function Main() {
           // get categories and store to redux
           const categories = await getCategories();
           dispatch(setCategories(categories));
-
-          // widget
-          SendAllTodos();
 
           setIsLoading(true);
         }
