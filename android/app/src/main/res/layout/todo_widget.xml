@@ -5,28 +5,52 @@
     android:orientation="vertical"
     android:background="#99000000"
     >
-    <TextView
-        android:id="@+id/category_name"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
-    <ImageButton
-        android:id="@+id/refresh_widget_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/refresh"
-        android:background="@null"
-        android:scaleType="fitCenter"
-        />
+        android:background="#ab7fbb"
+        android:baselineAligned="false">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+            <TextView
+                android:id="@+id/category_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+            <ImageButton
+                android:id="@+id/refresh_widget_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/refresh"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/widget_refresh"
+                android:tint="@android:color/white"/>
+        </LinearLayout>
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="10sp">
         <ListView
             android:id="@+id/widget_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10sp"
             android:loopViews="true"/>
         <ProgressBar
             android:id="@+id/widget_progress_bar"

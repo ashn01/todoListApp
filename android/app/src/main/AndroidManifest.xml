@@ -9,7 +9,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/doobido_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/doobido_icon"
+        android:roundIcon="@mipmap/doobido_icon_round"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"

@@ -9,7 +9,7 @@ export async function SetCategoryOnWidget(category:string) {
     );
 }
 
-export async function GetCategoryOnWidget():string {
+export async function GetCategoryOnWidget():Promise<string> {
     const ret = await SharedStorage.get();
     console.log(ret);
     return ret

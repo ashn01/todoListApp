@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.SystemClock;
 import android.util.Pair;
 import android.widget.RemoteViews;
@@ -61,12 +62,14 @@ public class TodoWidgetService extends RemoteViewsService {
 
                 Cursor cursor;
                 if(categoryName.equals("All")){
-                    cursor = db.rawQuery("SELECT todoName, todoDescription " +
+                    cursor = db.rawQuery(
+                            "SELECT todoName, todoDescription, (strftime('%s',todoDeadline) - strftime('%s','now')) " +
                             "FROM TODO " +
                             "WHERE todoCompleted = 0 "
                             , null);
                 }else{
-                    cursor = db.rawQuery("SELECT t.todoName, t.todoDescription " +
+                    cursor = db.rawQuery(
+                            "SELECT t.todoName, t.todoDescription " +
                             "FROM TODO t, CATEGORY c " +
                             "WHERE todoCompleted = 0 " +
                             "AND t.categoryId = c.id " +
@@ -78,14 +81,16 @@ public class TodoWidgetService extends RemoteViewsService {
                     do {
                         String todoName = cursor.getString(0);
                         String todoDescription = cursor.getString(1);
-                        WidgetItem item = new WidgetItem(todoName,todoDescription);
+                        double dateBetween = cursor.getDouble(2);
+                        WidgetItem item = new WidgetItem(todoName,todoDescription,dateBetween);
                         todos.add(item);
-                        //exampleData[i++] = todoName;
                     } while (cursor.moveToNext());
                     cursor.close();
                 }
             }catch (SQLException e){
                 todos.clear();
+//                WidgetItem item = new WidgetItem(e.getMessage(),"");
+//                todos.add(item);
             }
         }
 
@@ -108,9 +113,44 @@ public class TodoWidgetService extends RemoteViewsService {
         public RemoteViews getViewAt(int position) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_collection);
             views.setTextViewText(R.id.todo_name, todos.get(position).getTodoName());
+            // date
+            views.setTextViewText(R.id.date_between, getAppropriateTime(todos.get(position).getDateBetween()));
+            if(todos.get(position).getDateBetween() < 0){ // if late
+                views.setTextColor(R.id.date_between, Color.parseColor("#ffa5a5"));
+            }else{
+                views.setTextColor(R.id.date_between, Color.parseColor("#a5a5ff"));
+            }
             views.setTextViewText(R.id.todo_description, todos.get(position).getTodoDescription());
-
             return views;
+        }
+
+        private String getAppropriateTime(double time){
+            String ret=null;
+            boolean isLate = false;
+            if(time < 0) { // late and make it positive number
+                isLate = true;
+                time*=-1;
+            }
+
+            if(time < 60){
+                ret = "less than a minute";
+            }else{
+                time/=60;
+                if(time < 60){
+                    ret = (int)time + " min";
+                }else{
+                    time/=60;
+                    if(time < 24){
+                        ret = (int)time + " h";
+                    }else{
+                        time /= 24;
+                        ret = (int)time + " d";
+                    }
+                }
+            }
+
+            ret += (isLate ? " late" : " left");
+            return ret;
         }
 
 

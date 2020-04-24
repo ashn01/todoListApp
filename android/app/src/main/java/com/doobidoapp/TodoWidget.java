@@ -5,11 +5,15 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.RemoteViews;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -39,6 +43,19 @@ public class TodoWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(),R.layout.todo_widget);
             views.setOnClickPendingIntent(R.id.refresh_widget_button,
                     getPendingSelfIntent(context,UPDATE_BUTTON_CLICKED, appWidgetIds)); // refresh
+
+            // set selectedCategory
+            String categoryName=null;
+            try{
+                SharedPreferences pref = context.getSharedPreferences("DATA",Context.MODE_PRIVATE);
+                String appString = pref.getString("appData","{\"value\":'All'}");
+                JSONObject appData = new JSONObject(appString);
+                categoryName = appData.getString("value");
+            } catch (JSONException e){
+                categoryName="All";
+            }finally {
+                views.setTextViewText(R.id.category_name, categoryName);
+            }
 
             // set listview and empty
             views.setRemoteAdapter(R.id.widget_list_view,serviceIntent);
@@ -79,9 +96,9 @@ public class TodoWidget extends AppWidgetProvider {
 
         // appear disappear by widget size
         if(maxHeight > 100){
-            views.setViewVisibility(R.id.refresh_widget_button, View.VISIBLE);
+            //views.setViewVisibility(R.id.refresh_widget_button, View.VISIBLE);
         }else{
-            views.setViewVisibility(R.id.refresh_widget_button, View.GONE);
+            //views.setViewVisibility(R.id.refresh_widget_button, View.GONE);
         }
 
     }

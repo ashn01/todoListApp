@@ -176,7 +176,7 @@ export function addTodo(todo:ITodo):Promise<number>
         console.log(todo)
         db.transaction(tx=>{
             tx.executeSql(`INSERT INTO TODO (todoName, todoDescription, todoDeadline, todoCompleted, categoryId) VALUES (?,?,?,?,?);`,
-            [todo.todoName,todo.todoDescription,todo.todoDeadline.toISOString(),c,todo.categoryId],
+            [todo.todoName,todo.todoDescription,todo.todoDeadline.toLocaleString(),c,todo.categoryId],
                             (tx,res)=>{
                                 console.log("Success addTodo")
                                 resolve(res.insertId)

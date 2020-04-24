@@ -1,11 +1,14 @@
 package com.doobidoapp;
 
 public class WidgetItem {
-    String todoName;
-    String todoDescription;
-    public WidgetItem(String todoName,String todoDescription){
+    private String todoName;
+    private String todoDescription;
+    private double dateBetween;
+
+    public WidgetItem(String todoName,String todoDescription, double dateBetween){
         this.todoName = todoName;
         this.todoDescription = todoDescription;
+        this.dateBetween = dateBetween;
     }
     public String getTodoName() {
         return todoName;
@@ -21,5 +24,13 @@ public class WidgetItem {
 
     public void setTodoDescription(String todoDescription) {
         this.todoDescription = todoDescription;
+    }
+
+    public double getDateBetween() {
+        return dateBetween;
+    }
+
+    public void setDateBetween(double dateBetween) {
+        this.dateBetween = dateBetween;
     }
 }

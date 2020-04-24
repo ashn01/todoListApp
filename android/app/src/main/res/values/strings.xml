@@ -2,4 +2,5 @@
     <string name="app_name">DoobidoApp</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="widget_refresh">Refresh</string>
 </resources>
