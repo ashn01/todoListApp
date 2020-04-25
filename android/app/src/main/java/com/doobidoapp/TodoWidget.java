@@ -48,9 +48,9 @@ public class TodoWidget extends AppWidgetProvider {
             String categoryName=null;
             try{
                 SharedPreferences pref = context.getSharedPreferences("DATA",Context.MODE_PRIVATE);
-                String appString = pref.getString("appData","{\"value\":'All'}");
+                String appString = pref.getString("appData","{\"selectedCategory\":'All'}");
                 JSONObject appData = new JSONObject(appString);
-                categoryName = appData.getString("value");
+                categoryName = appData.getString("selectedCategory");
             } catch (JSONException e){
                 categoryName="All";
             }finally {

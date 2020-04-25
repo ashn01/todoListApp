@@ -43,18 +43,23 @@ public class TodoWidgetService extends RemoteViewsService {
         }
 
         private void loadDateFromSQLite() {
-            String categoryName = "";
+            String categoryName = "All";
+            boolean showDelayed = true;
             String query;
 
+            // get Settings from shared preference
             try{
                 SharedPreferences pref = context.getSharedPreferences("DATA",Context.MODE_PRIVATE);
-                String appString = pref.getString("appData","{\"value\":'All'}");
+                String appString = pref.getString("appData","{\"selectedCategory\":'All',\"showDelayed\":true}");
                 JSONObject appData = new JSONObject(appString);
-                categoryName = appData.getString("value");
+                categoryName = appData.getString("selectedCategory");
+                showDelayed = appData.getBoolean("showDelayed");
             } catch (JSONException e){
                 categoryName="All";
+                showDelayed = true;
             }
 
+            // running sql to get data from db
             try {
                 todos.clear();
                 DBHelper helper = new DBHelper(context);
@@ -65,13 +70,15 @@ public class TodoWidgetService extends RemoteViewsService {
                     cursor = db.rawQuery(
                             "SELECT todoName, todoDescription, (strftime('%s',todoDeadline) - strftime('%s','now')) " +
                             "FROM TODO " +
-                            "WHERE todoCompleted = 0 "
+                            "WHERE todoCompleted = 0 " +
+                             (showDelayed ? "" : " AND (strftime('%s',todoDeadline) - strftime('%s','now')) > 0")
                             , null);
                 }else{
                     cursor = db.rawQuery(
-                            "SELECT t.todoName, t.todoDescription " +
+                            "SELECT t.todoName, t.todoDescription, (strftime('%s',t.todoDeadline) - strftime('%s','now')) " +
                             "FROM TODO t, CATEGORY c " +
                             "WHERE todoCompleted = 0 " +
+                             (showDelayed ? "" : " AND (strftime('%s',todoDeadline) - strftime('%s','now')) > 0 ") +
                             "AND t.categoryId = c.id " +
                             "AND c.categoryName = ?", new String[]{categoryName});
                 }
@@ -89,8 +96,8 @@ public class TodoWidgetService extends RemoteViewsService {
                 }
             }catch (SQLException e){
                 todos.clear();
-//                WidgetItem item = new WidgetItem(e.getMessage(),"");
-//                todos.add(item);
+                WidgetItem item = new WidgetItem(e.getMessage(),"", 0);
+                todos.add(item);
             }
         }
 

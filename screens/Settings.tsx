@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { Container, Content, ListItem, Left, View, Body, Text, Right, Item, Separator, Picker, Label, Row, Col, List } from 'native-base'
+import { Container, Content, ListItem, Left, View, Body, Text, Right, Item, Separator, Picker, Label, Row, Col, List, Switch } from 'native-base'
 import SettingHeaderBar from './SettingHeaderBar'
 
 // set setting
@@ -12,23 +12,41 @@ import { RootState } from '../modules';
 // interface
 import ICategory from '../interfaces/ICategory'
 
+interface Settings{
+  selectedCategory:string,
+  showDelayed:boolean
+}
+
 export default function Settings({ navigation }: any) {
 
   const allCategories: ICategory[] = useSelector((state: RootState) => state.category.categories);
   const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [showDelayed, setShowDelayed] = useState<boolean>();
   React.useEffect(() => {
     init();
   }, [])
 
   const init = async ()=>{
-    const curSelectedCategory = await GetCategoryOnWidget();
-    var c = allCategories.find(v=>v.categoryName === curSelectedCategory)
-    setSelectedCategory(curSelectedCategory);
+    const s:Settings = await GetCategoryOnWidget();
+    var c = allCategories.find(v=>v.categoryName === s.selectedCategory)
+    if(c != undefined){
+      setSelectedCategory(c.categoryName);
+      setShowDelayed(s.showDelayed);
+    }
+    else{
+      setSelectedCategory('All');
+      setShowDelayed(true);
+    }
   }
 
   const selectCategory = (value: string) => {
     setSelectedCategory(value)
-    SetCategoryOnWidget(value);
+    SetCategoryOnWidget(value, showDelayed);
+  }
+
+  const toggleShowDelayed = (value:boolean) =>{
+    setShowDelayed(value)
+    SetCategoryOnWidget(selectedCategory, value);
   }
 
   return (
@@ -62,10 +80,22 @@ export default function Settings({ navigation }: any) {
                 }
               </Picker>
               <Text note style={{marginTop:-10}}> Displayed category on Widget</Text>
-
             </Body>
             <Right></Right>
           </ListItem>
+
+          <ListItem avatar style={{marginLeft:-10}}>
+            <Left>
+            </Left>
+            <Body>
+              <Text style={{paddingLeft:8}}>Display delayed Todos</Text>
+              <Text note> Display delayed todos on widget</Text>
+            </Body>
+            <Right style={{justifyContent: 'center'}}>
+              <Switch value={showDelayed} onValueChange={v=>toggleShowDelayed(v)}/>
+            </Right>
+          </ListItem>
+
         </List>
       </Content>
     </Container>

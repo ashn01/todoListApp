@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
+import SplashScreen  from 'react-native-splash-screen'
 
 // redux
 import {useDispatch} from 'react-redux';
@@ -51,6 +52,7 @@ export default function Main() {
           dispatch(setCategories(categories));
 
           setIsLoading(true);
+          SplashScreen.hide();
         }
       };
       load();

@@ -48,17 +48,33 @@ public class SharedStorage extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void get(final Promise promise) {
+    public void getSelectedCategory(final Promise promise) {
         String ret=null;
         try {
             SharedPreferences pref = context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
-            String value = pref.getString("appData", null);
+            String value = pref.getString("appData", "{\"selectedCategory\":'All',\"showDelayed\":true}");
             JSONObject json = new JSONObject(value);
-            ret = json.getString("value");
+            ret = json.getString("selectedCategory");
         } catch (JSONException e){
-            ret=null;
+            ret="All";
         }finally {
             promise.resolve(ret);
         }
     }
+
+    @ReactMethod
+    public void getShowDelayed(final Promise promise) {
+        boolean ret = true;
+        try {
+            SharedPreferences pref = context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+            String value = pref.getString("appData", "{\"selectedCategory\":'All',\"showDelayed\":true}");
+            JSONObject json = new JSONObject(value);
+            ret = json.getBoolean("showDelayed");
+        } catch (JSONException e){
+
+        }finally {
+            promise.resolve(ret);
+        }
+    }
+
 }
