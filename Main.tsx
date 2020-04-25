@@ -2,9 +2,7 @@ import React, {useState} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
-
-// widget
-import { NativeModules } from 'react-native';
+import SplashScreen  from 'react-native-splash-screen'
 
 // redux
 import {useDispatch} from 'react-redux';
@@ -18,6 +16,8 @@ import Loading from './Loading'
 import EditTodo from './screens/EditTodo';
 import EditCategory from './screens/EditCategory';
 import DrawerNavigation from './DrawerNavigation';
+import Setting from './screens/Settings'
+
 
 /*
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
@@ -34,8 +34,6 @@ const Root = createStackNavigator();
  *  Usually, we'd render this component at the root of our app, which is usually the component exported from App.js.
 */
 
-// widget
-const SharedStorage = NativeModules.SharedStorage;
 
 export default function Main() {
     const [isLoading, setIsLoading] = useState(false);
@@ -53,12 +51,8 @@ export default function Main() {
           const categories = await getCategories();
           dispatch(setCategories(categories));
 
-          // widget
-          SharedStorage.set(
-            JSON.stringify({text: 'This is data from the React Native app!'})
-           );
-
           setIsLoading(true);
+          SplashScreen.hide();
         }
       };
       load();
@@ -73,6 +67,7 @@ export default function Main() {
                     <Root.Screen name="Main" component={DrawerNavigation} options={{ title: 'Todo' }} />
                     <Root.Screen name="EditTodo" component={EditTodo} />
                     <Root.Screen name="EditCategory" component={EditCategory} /> 
+                    <Root.Screen name="Setting" component={Setting}/>
                 </Root.Navigator>
             </NavigationContainer>
         );

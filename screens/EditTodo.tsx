@@ -65,8 +65,8 @@ export default function EditTodo({route, navigation}:any)
     const dateFormat = () =>{
         var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
         var d = todo.todoDeadline
+        console.log(todo.todoDeadline.toLocaleString())
         var doW = days[d.getDay()]
         var mon = months[d.getMonth()]
         var day = d.getDate()
