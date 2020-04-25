@@ -1,6 +1,7 @@
 package com.doobidoapp;
 
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Pair;
 import android.widget.RemoteViews;
@@ -125,9 +127,14 @@ public class TodoWidgetService extends RemoteViewsService {
             if(todos.get(position).getDateBetween() < 0){ // if late
                 views.setTextColor(R.id.date_between, Color.parseColor("#ffa5a5"));
             }else{
-                views.setTextColor(R.id.date_between, Color.parseColor("#a5a5ff"));
+                views.setTextColor(R.id.date_between, Color.parseColor("#c494e2"));
             }
-            views.setTextViewText(R.id.todo_description, todos.get(position).getTodoDescription());
+            //views.setTextViewText(R.id.todo_description, todos.get(position).getTodoDescription());
+
+            Intent fillInIntent = new Intent();
+            fillInIntent.putExtra("keyData",position);
+            views.setOnClickFillInIntent(R.id.item_frame, fillInIntent);
+
             return views;
         }
 

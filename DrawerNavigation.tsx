@@ -59,15 +59,18 @@ function CustomDrawerContent(props:any)
     // update database
     const v = await dbUpdateCategory(category);
 
-    // update todo redux
-    const todos = await getAllTodos();
-    dispatch(setTodos(todos))
+    // retreive data
+    if(selectedCategoryId === 0){ 
+      // update todo redux
+      const todos = await getAllTodos();
+      dispatch(setTodos(todos))
+    }
   }
 
   return (
     <DrawerContentScrollView {...props} style={{marginTop:-4}}>
       <List >
-        <ListItem itemDivider style={styles.headerBackground}>
+        <ListItem itemDivider style={[styles.headerBackground, styles.headerHeight]}>
           <Left>
             <Title>Doobido</Title>
           </Left>

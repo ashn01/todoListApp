@@ -168,12 +168,12 @@ export default {
   footerPaddingBottom: 0,
 
   // FooterTab
-  tabBarTextColor: platform === PLATFORM.IOS ? '#737373' : '#bfc6ea',
+  tabBarTextColor: platform === PLATFORM.IOS ? '#737373' : '#000',
   tabBarTextSize: platform === PLATFORM.IOS ? 14 : 11,
-  activeTab: platform === PLATFORM.IOS ? '#007aff' : '#fff',
+  activeTab: platform === PLATFORM.IOS ? '#007aff' : '#000',
   sTabBarActiveTextColor: '#007aff',
-  tabBarActiveTextColor: platform === PLATFORM.IOS ? '#2874F0' : '#fff',
-  tabActiveBgColor: platform === PLATFORM.IOS ? '#cde1f9' : '#3F51B5',
+  tabBarActiveTextColor: platform === PLATFORM.IOS ? '#2874F0' : '#000',
+  tabActiveBgColor: platform === PLATFORM.IOS ? '#cde1f9' : '#000',
 
   // Header
   toolbarBtnColor: platform === PLATFORM.IOS ? '#007aff' : '#fff',

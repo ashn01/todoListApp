@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body, Input, Toast} from 'native-base'
+import { List, ListItem, Right, Icon, Button, Content, Body, Input, Toast} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 
 import Todo from './Todo'
@@ -13,7 +13,8 @@ import { setTodos } from '../modules/todo/actions'
 import {addTodo, getAllTodos, getTodos, updateTodo} from '../helper/sqlite'
 
 import ITodo from '../interfaces/ITodo';
-import { initialState } from '../modules/navigation/types';
+
+import {validationName} from '../helper/general'
 
 export default function TodoLists()
 {
@@ -64,24 +65,56 @@ export default function TodoLists()
     }
 
     const createTodo =async() =>{
-        const newTodo:ITodo = { key:null, 
-                                id:null, 
-                                todoName:todoText, 
-                                todoDescription:"", 
-                                todoDeadline:new Date(), 
-                                todoCompleted: false, 
-                                categoryId:selectedCategoryId,
-                            }
-        setTodoText(""); // reset input field
-        var id = await addTodo(newTodo);
-        initTodos()
-        // show toast
-        Toast.show({
-            text:'Todo Added!',
-            buttonText:'Close',
-            type:'success',
-            duration:2000
-        })
+        if(validationName(todoText)){
+            const newTodo:ITodo = { key:null, 
+                                    id:null, 
+                                    todoName:todoText, 
+                                    todoDescription:"", 
+                                    todoDeadline:new Date(), 
+                                    todoCompleted: false, 
+                                    categoryId:selectedCategoryId,
+                                }
+            setTodoText(""); // reset input field
+            await addTodo(newTodo);
+            initTodos()
+            // show toast
+            Toast.show({
+                text:"Todo Added!",
+                type:'success',
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
+            })
+        }else{
+            // show toast
+            Toast.show({
+                text:"Empty todo cannot be added",
+                type:'warning',
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
+            })
+        }
     }
 
     return (

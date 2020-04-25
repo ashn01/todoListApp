@@ -24,8 +24,7 @@ export default function App() {
     return (
       <Provider store={store}>
         <Root>
-        <Main/>
-
+          <Main/>
         </Root>
       </Provider>
     );

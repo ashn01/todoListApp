@@ -1,8 +1,12 @@
 import {StyleSheet} from 'react-native'
+import {Platform} from 'react-native';
 
 const styles = StyleSheet.create({
     headerBackground : {
-        backgroundColor:'#ab7fbb'
+        backgroundColor:'#B7BABB'
+    },
+    headerHeight : {
+        height: Platform.OS === 'ios' ? 64 : 52,
     }
 })
 
