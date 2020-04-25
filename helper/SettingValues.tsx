@@ -1,9 +1,7 @@
 import { NativeModules } from 'react-native';
 
-interface Settings{
-    selectedCategory:string,
-    showDelayed:boolean
-}
+// interface
+import ISettings from '../interfaces/ISettings'
 
 // widget
 const SharedStorage = NativeModules.SharedStorage;
@@ -14,13 +12,13 @@ export async function SetCategoryOnWidget(category:string, delayed:boolean) {
     );
 }
 
-export async function GetCategoryOnWidget():Promise<Settings> {
+export async function GetCategoryOnWidget():Promise<ISettings> {
     const sCate = await SharedStorage.getSelectedCategory();
     const sDelay = await SharedStorage.getShowDelayed();
 
 
 
-    const s:Settings = {
+    const s:ISettings = {
         selectedCategory : sCate,
         showDelayed : sDelay
     }

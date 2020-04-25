@@ -13,7 +13,8 @@ import { setTodos } from '../modules/todo/actions'
 import {addTodo, getAllTodos, getTodos, updateTodo} from '../helper/sqlite'
 
 import ITodo from '../interfaces/ITodo';
-import { initialState } from '../modules/navigation/types';
+
+import {validationName} from '../helper/general'
 
 export default function TodoLists()
 {
@@ -64,24 +65,34 @@ export default function TodoLists()
     }
 
     const createTodo =async() =>{
-        const newTodo:ITodo = { key:null, 
-                                id:null, 
-                                todoName:todoText, 
-                                todoDescription:"", 
-                                todoDeadline:new Date(), 
-                                todoCompleted: false, 
-                                categoryId:selectedCategoryId,
-                            }
-        setTodoText(""); // reset input field
-        var id = await addTodo(newTodo);
-        initTodos()
-        // show toast
-        Toast.show({
-            text:'Todo Added!',
-            buttonText:'Close',
-            type:'success',
-            duration:2000
-        })
+        if(validationName(todoText)){
+            const newTodo:ITodo = { key:null, 
+                                    id:null, 
+                                    todoName:todoText, 
+                                    todoDescription:"", 
+                                    todoDeadline:new Date(), 
+                                    todoCompleted: false, 
+                                    categoryId:selectedCategoryId,
+                                }
+            setTodoText(""); // reset input field
+            await addTodo(newTodo);
+            initTodos()
+            // show toast
+            Toast.show({
+                text:'Todo Added!',
+                buttonText:'Close',
+                type:'success',
+                duration:2000
+            })
+        }else{
+            // show toast
+            Toast.show({
+                text:'Empty todo cannot be added',
+                buttonText:'Close',
+                type:'warning',
+                duration:2000
+            })
+        }
     }
 
     return (

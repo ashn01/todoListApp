@@ -11,11 +11,8 @@ import { RootState } from '../modules';
 
 // interface
 import ICategory from '../interfaces/ICategory'
+import ISettings from '../interfaces/ISettings'
 
-interface Settings{
-  selectedCategory:string,
-  showDelayed:boolean
-}
 
 export default function Settings({ navigation }: any) {
 
@@ -27,7 +24,7 @@ export default function Settings({ navigation }: any) {
   }, [])
 
   const init = async ()=>{
-    const s:Settings = await GetCategoryOnWidget();
+    const s:ISettings = await GetCategoryOnWidget();
     var c = allCategories.find(v=>v.categoryName === s.selectedCategory)
     if(c != undefined){
       setSelectedCategory(c.categoryName);

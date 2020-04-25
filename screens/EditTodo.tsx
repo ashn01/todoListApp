@@ -19,6 +19,7 @@ import {updateTodo as dbUpdateTodo} from '../helper/sqlite'
 // interface
 import ITodo from '../interfaces/ITodo'
 
+import {validationName} from '../helper/general'
 
 export default function EditTodo({route, navigation}:any)
 {
@@ -81,18 +82,28 @@ export default function EditTodo({route, navigation}:any)
     }
 
     const editTodo = () =>{
-        // show toast
-        Toast.show({
-            text:'Todo saved!',
-            buttonText:'Close',
-            type:'success',
-            duration:2000
-        })
-        // update db
-        dbUpdateTodo(todo)
-        // update redux
-        dispatch(updateTodo(todo))
-        navigation.goBack();
+        if(validationName(todo.todoName)){
+            // show toast
+            Toast.show({
+                text:'Todo saved!',
+                buttonText:'Close',
+                type:'success',
+                duration:2000
+            })
+            // update db
+            dbUpdateTodo(todo)
+            // update redux
+            dispatch(updateTodo(todo))
+            navigation.goBack();
+        }else{
+            // show toast
+            Toast.show({
+                text:'Empty todo cannot be added',
+                buttonText:'Close',
+                type:'warning',
+                duration:2000
+            })
+        }
     }
     
     return (
