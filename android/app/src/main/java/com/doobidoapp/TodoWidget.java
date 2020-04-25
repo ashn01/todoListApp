@@ -28,7 +28,9 @@ public class TodoWidget extends AppWidgetProvider {
         for(int appWidgetId : appWidgetIds){
             //Toast.makeText(context, "onUpdate", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // shared
             //SharedPreferences prefs = context.getSharedPreferences(SHARED_PRES, Context.MODE_PRIVATE);
@@ -44,6 +46,7 @@ public class TodoWidget extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.refresh_widget_button,
                     getPendingSelfIntent(context,UPDATE_BUTTON_CLICKED, appWidgetIds)); // refresh
 
+            //views.setOnClickPendingIntent(R.id.list_container,pendingIntent);
             // set selectedCategory
             String categoryName=null;
             try{
@@ -60,6 +63,8 @@ public class TodoWidget extends AppWidgetProvider {
             // set listview and empty
             views.setRemoteAdapter(R.id.widget_list_view,serviceIntent);
             views.setEmptyView(R.id.widget_list_view, R.id.widget_progress_bar);
+
+            views.setPendingIntentTemplate(R.id.widget_list_view, pendingIntent);
 
             Bundle appWidgetOptions = appWidgetManager.getAppWidgetOptions(appWidgetId);
             resizeWidget(appWidgetOptions, views);
