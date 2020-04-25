@@ -16,6 +16,7 @@ import {insertCategory, updateCategory as dbUpdateCategory} from '../helper/sqli
 
 // interface
 import ICategory from '../interfaces/ICategory'
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const initialState: ICategory = {
@@ -44,9 +45,20 @@ export default function EditCategory({route, navigation}:any)
             // show toast
             Toast.show({
                 text:'Category Added!',
-                buttonText:'Close',
                 type:'success',
-                duration:2000
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
             })
             // insert database
             var id = await insertCategory(category);
@@ -60,9 +72,20 @@ export default function EditCategory({route, navigation}:any)
             // show toast
             Toast.show({
                 text:'Category Modified!',
-                buttonText:'Close',
                 type:'success',
-                duration:2000
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
             })
             // update database
             dbUpdateCategory(category)
@@ -74,7 +97,8 @@ export default function EditCategory({route, navigation}:any)
 
     return (
         <Container>
-            <Header style={styles.headerBackground}>
+            <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#6C0FA7', '#3E0066']}>
+            <Header style={{backgroundColor: 'transparent', margin:-2}}>
                 <Left>
                     <Button transparent onPress={()=>navigation.goBack()}>
                         <Icon name='ios-arrow-back'/>
@@ -90,6 +114,7 @@ export default function EditCategory({route, navigation}:any)
                     </Button>
                 </Right>
             </Header>
+            </LinearGradient>
             <Content>
                 <Grid>
                     <Row >

@@ -37,9 +37,21 @@ export default function Todo({ init, todo, color }: TodoProps) {
         init();
         // show toast
         Toast.show({
-            text: todo.todoCompleted ? "Todo completed!" : "Todo incompleted!",
-            buttonText: 'Close',
-            duration: 2000
+            text:todo.todoCompleted ? "Todo completed!" : "Todo incompleted!",
+            type:'success',
+            duration:2000,
+            style:{
+                bottom:'20%', 
+                width:'60%', 
+                left:0,
+                right:0,
+                marginLeft:'auto',
+                marginRight:'auto',
+                borderRadius:300
+            },
+            textStyle: {
+                textAlign: 'center'
+            }
         })
     }
 
@@ -66,7 +78,7 @@ export default function Todo({ init, todo, color }: TodoProps) {
 
     const RightAction = (progress:Animated.AnimatedInterpolation, dragX:Animated.AnimatedInterpolation) => {
         return (
-            <Item style={styles.actionView}>
+            <Item  style={styles.actionView}>
                 <Button style={[styles.actionButton, styles.actionEdit]} onPress={() => editTodo()}>
                     <Icon name='md-create' style={styles.actionIcon} />
                 </Button>
@@ -103,23 +115,25 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     actionView: {
-        width: '30%'
+        width: '30%',
+        marginLeft:-1 // to remove underlined space between todo and items
     },
     actionButton: {
         width: '50%',
         height: '100%',
-        justifyContent: 'center',
-        margin: 'auto'
+        justifyContent: 'center'
     },
     actionEdit: {
         backgroundColor: '#2bc26c',
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
+        borderRadius:0,
+        // borderTopRightRadius: 0,
+        // borderBottomRightRadius: 0,
     },
     actionDelete: {
         backgroundColor: '#eb4034',
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
+        borderRadius:0,
+        // borderTopLeftRadius: 0,
+        // borderBottomLeftRadius: 0,
     },
     actionIcon: {
         color: 'white'

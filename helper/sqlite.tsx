@@ -173,7 +173,6 @@ export function addTodo(todo:ITodo):Promise<number>
 {
     return new Promise((resolve,reject)=>{
         const c = todo.todoCompleted ? 1 : 0;
-        console.log(todo)
         db.transaction(tx=>{
             tx.executeSql(`INSERT INTO TODO (todoName, todoDescription, todoDeadline, todoCompleted, categoryId) VALUES (?,?,?,?,?);`,
             [todo.todoName,todo.todoDescription,todo.todoDeadline.toISOString(),c,todo.categoryId],

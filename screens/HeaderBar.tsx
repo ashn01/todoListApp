@@ -60,16 +60,29 @@ export default function HeaderBar() {
                     dispatch(deleteCategory(selectedCategoryId))
                     // show toast
                     Toast.show({
-                        text: 'Category Deleted!',
-                        buttonText: 'Close',
-                        duration: 2000
+                        text:'Category Deleted!',
+                        type:'success',
+                        duration:2000,
+                        style:{
+                            bottom:'20%', 
+                            width:'60%', 
+                            left:0,
+                            right:0,
+                            marginLeft:'auto',
+                            marginRight:'auto',
+                            borderRadius:300
+                        },
+                        textStyle: {
+                            textAlign: 'center'
+                        }
                     })
                 }
             })
     }
 
     return (
-            <Header style={styles.headerBackground}>
+        <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#6C0FA7', '#3E0066']}>
+            <Header style={{backgroundColor: 'transparent', margin:-2}}>
                 <Left>
                     <Button transparent onPress={()=>navigation.openDrawer()}>
                         <Icon name='menu' />
@@ -99,5 +112,6 @@ export default function HeaderBar() {
                 }
                 </Right>
             </Header>
+        </LinearGradient>
     );
 }

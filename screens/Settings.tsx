@@ -53,10 +53,16 @@ export default function Settings({ navigation }: any) {
         <List>
           <ListItem itemDivider>
             <Text>
+              General
+          </Text>
+          </ListItem>
+
+          <ListItem itemDivider>
+            <Text>
               Widget
           </Text>
           </ListItem>
-          <ListItem avatar style={{marginLeft:-10}}>
+          <ListItem avatar style={styles.listItemStyle}>
             <Left>
             </Left>
             <Body>
@@ -76,17 +82,17 @@ export default function Settings({ navigation }: any) {
                   })
                 }
               </Picker>
-              <Text note style={{marginTop:-10}}> Displayed category on Widget</Text>
+              <Text note style={[styles.noteStyle,{marginTop:-10}]}> Displayed category on Widget</Text>
             </Body>
             <Right></Right>
           </ListItem>
 
-          <ListItem avatar style={{marginLeft:-10}}>
+          <ListItem avatar style={styles.listItemStyle}>
             <Left>
             </Left>
             <Body>
               <Text style={{paddingLeft:8}}>Display delayed Todos</Text>
-              <Text note> Display delayed todos on widget</Text>
+              <Text note style={[styles.noteStyle,{marginTop:5}]}> Display delayed todos on widget</Text>
             </Body>
             <Right style={{justifyContent: 'center'}}>
               <Switch value={showDelayed} onValueChange={v=>toggleShowDelayed(v)}/>
@@ -98,3 +104,12 @@ export default function Settings({ navigation }: any) {
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  listItemStyle:{
+    marginLeft:-10
+  },
+  noteStyle:{
+    paddingLeft:5
+  }
+})

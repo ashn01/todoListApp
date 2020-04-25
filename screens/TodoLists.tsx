@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { List, ListItem, Left, Text, Right, Icon, Button, Content, CheckBox, Body, Input, Toast} from 'native-base'
+import { List, ListItem, Right, Icon, Button, Content, Body, Input, Toast} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 
 import Todo from './Todo'
@@ -79,18 +79,40 @@ export default function TodoLists()
             initTodos()
             // show toast
             Toast.show({
-                text:'Todo Added!',
-                buttonText:'Close',
+                text:"Todo Added!",
                 type:'success',
-                duration:2000
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
             })
         }else{
             // show toast
             Toast.show({
-                text:'Empty todo cannot be added',
-                buttonText:'Close',
+                text:"Empty todo cannot be added",
                 type:'warning',
-                duration:2000
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
             })
         }
     }

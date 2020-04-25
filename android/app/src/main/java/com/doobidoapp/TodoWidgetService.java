@@ -125,9 +125,9 @@ public class TodoWidgetService extends RemoteViewsService {
             if(todos.get(position).getDateBetween() < 0){ // if late
                 views.setTextColor(R.id.date_between, Color.parseColor("#ffa5a5"));
             }else{
-                views.setTextColor(R.id.date_between, Color.parseColor("#a5a5ff"));
+                views.setTextColor(R.id.date_between, Color.parseColor("#c494e2"));
             }
-            views.setTextViewText(R.id.todo_description, todos.get(position).getTodoDescription());
+            //views.setTextViewText(R.id.todo_description, todos.get(position).getTodoDescription());
             return views;
         }
 

@@ -20,6 +20,7 @@ import {updateTodo as dbUpdateTodo} from '../helper/sqlite'
 import ITodo from '../interfaces/ITodo'
 
 import {validationName} from '../helper/general'
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function EditTodo({route, navigation}:any)
 {
@@ -67,7 +68,6 @@ export default function EditTodo({route, navigation}:any)
         var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         var d = todo.todoDeadline
-        console.log(todo.todoDeadline.toLocaleString())
         var doW = days[d.getDay()]
         var mon = months[d.getMonth()]
         var day = d.getDate()
@@ -83,12 +83,23 @@ export default function EditTodo({route, navigation}:any)
 
     const editTodo = () =>{
         if(validationName(todo.todoName)){
-            // show toast
+            // show toast            
             Toast.show({
                 text:'Todo saved!',
-                buttonText:'Close',
                 type:'success',
-                duration:2000
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
             })
             // update db
             dbUpdateTodo(todo)
@@ -99,16 +110,28 @@ export default function EditTodo({route, navigation}:any)
             // show toast
             Toast.show({
                 text:'Empty todo cannot be added',
-                buttonText:'Close',
                 type:'warning',
-                duration:2000
+                duration:2000,
+                style:{
+                    bottom:'20%', 
+                    width:'60%', 
+                    left:0,
+                    right:0,
+                    marginLeft:'auto',
+                    marginRight:'auto',
+                    borderRadius:300
+                },
+                textStyle: {
+                    textAlign: 'center'
+                }
             })
         }
     }
     
     return (
         <Container>
-            <Header style={styles.headerBackground}>
+            <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#6C0FA7', '#3E0066']}>
+            <Header style={{backgroundColor: 'transparent', margin:-2}}>
                 <Left>
                     <Button transparent onPress={()=>navigation.goBack()}>
                         <Icon name='ios-arrow-back'/>
@@ -124,6 +147,7 @@ export default function EditTodo({route, navigation}:any)
                     </Button>
                 </Right>
             </Header>
+            </LinearGradient>
             <Content>
                 <Grid>
                     <Row >
