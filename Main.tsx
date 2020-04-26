@@ -9,7 +9,10 @@ import {useDispatch} from 'react-redux';
 import { setCategories } from './modules/category/actions';
 
 // sqlite
-import {createTables, getCategories, connect} from './helper/sqlite'
+import {createTables, getCategories, connect, getAllTodos} from './helper/sqlite'
+
+// push notification
+import LocalNotification from './helper/pushNotification'
 
 // screens
 import Loading from './Loading'
@@ -17,6 +20,8 @@ import EditTodo from './screens/EditTodo';
 import EditCategory from './screens/EditCategory';
 import DrawerNavigation from './DrawerNavigation';
 import Setting from './screens/Settings'
+
+import {isDelayed} from './helper/general'
 
 
 /*
@@ -51,11 +56,24 @@ export default function Main() {
           const categories = await getCategories();
           dispatch(setCategories(categories));
 
+          const todos = await getAllTodos(false);
+          LocalNotification.unregister(); // remove all notification
+          LocalNotification.register();
+          for(var todo of todos){
+            if(!isDelayed(new Date(todo.todoDeadline)))
+              LocalNotification.addNotification(todo);
+          }
+          
+
           setIsLoading(true);
           SplashScreen.hide();
         }
       };
       load();
+
+      return function cleanup() {
+        LocalNotification.unregister();
+      }
     }, [])
   
     if(!isLoading)

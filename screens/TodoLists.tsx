@@ -10,7 +10,7 @@ import { RootState } from '../modules';
 import { setTodos } from '../modules/todo/actions'
 
 // db
-import {addTodo, getAllTodos, getTodos, updateTodo} from '../helper/sqlite'
+import {addTodo, getAllTodosWithChecked, getTodos, updateTodo} from '../helper/sqlite'
 
 import ITodo from '../interfaces/ITodo';
 
@@ -46,7 +46,7 @@ export default function TodoLists()
     const initTodos = async ()=>{
         if(selectedCategoryId === 0) // select all
         {
-            const todos = await getAllTodos();
+            const todos = await getAllTodosWithChecked();
             dispatch(setTodos(todos))
         }
         else // select any specific

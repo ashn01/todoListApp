@@ -27,6 +27,7 @@ public class TodoWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for(int appWidgetId : appWidgetIds){
             //Toast.makeText(context, "onUpdate", Toast.LENGTH_SHORT).show();
+            // list items event
             Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -64,6 +65,7 @@ public class TodoWidget extends AppWidgetProvider {
             views.setRemoteAdapter(R.id.widget_list_view,serviceIntent);
             views.setEmptyView(R.id.widget_list_view, R.id.widget_progress_bar);
 
+            // list items events
             views.setPendingIntentTemplate(R.id.widget_list_view, pendingIntent);
 
             Bundle appWidgetOptions = appWidgetManager.getAppWidgetOptions(appWidgetId);
