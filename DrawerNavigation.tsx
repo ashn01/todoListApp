@@ -21,7 +21,7 @@ import ICategory from './interfaces/ICategory'
 import styles from './helper/styles'
 
 // db
-import {updateCategory as dbUpdateCategory, getAllTodos} from './helper/sqlite'
+import {updateCategory as dbUpdateCategory, getAllTodosWithChecked} from './helper/sqlite'
 
 const Drawer = createDrawerNavigator();
 
@@ -62,7 +62,7 @@ function CustomDrawerContent(props:any)
     // retreive data
     if(selectedCategoryId === 0){ 
       // update todo redux
-      const todos = await getAllTodos();
+      const todos = await getAllTodosWithChecked();
       dispatch(setTodos(todos))
     }
   }

@@ -188,17 +188,38 @@ export function addTodo(todo:ITodo):Promise<number>
     })
 }
 
-export function getAllTodos():Promise<ITodo[]>
+export function getAllTodosWithChecked():Promise<ITodo[]>
 {
     return new Promise((resolve, reject)=>{
         db.transaction(tx=>{
             tx.executeSql(`SELECT t.id, t.todoName, t.todoDescription, t.todoDeadline, t.todoCompleted, t.categoryId , c.color FROM TODO t, CATEGORY c WHERE t.categoryId = c.id AND t.categoryId IN (SELECT id FROM CATEGORY WHERE checked = 1);`,[],
             (tx,res)=>{
-                console.log("Success getAllTodos")
+                console.log("Success getAllTodosWithChecked")
                 var ret = [];
                 for(let i=0;i<res.rows.length;++i)
                 {
                     res.rows.item(i).todoDeadline = new Date(res.rows.item(i).todoDeadline); // back to date?
+                    ret.push(res.rows.item(i))
+                }
+                resolve(ret);
+            },(tx,err)=>{
+                console.log(err)
+                return false;
+            })
+        })
+    })
+}
+
+export function getAllTodos(completed:boolean):Promise<ITodo[]>
+{
+    const param = completed ? 1:0;
+    return new Promise((resolve, reject)=>{
+        db.transaction(tx=>{
+            tx.executeSql(`SELECT * FROM TODO WHERE todoCompleted = ?;`,[param],
+            (tx,res)=>{
+                console.log("Success getAllTodos")
+                var ret = [];
+                for(let i=0;i<res.rows.length;++i){
                     ret.push(res.rows.item(i))
                 }
                 resolve(ret);

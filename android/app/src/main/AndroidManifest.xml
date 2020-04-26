@@ -36,6 +36,27 @@
 
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
+        <!-- push notification -->
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_name"
+            android:value="com.doobidoapp"/>
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_description"
+                  android:value="com.doobidoapp"/>
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService"/>
+        <service
+            android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- end of push notification -->
+        
         <service
             android:name=".TodoWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
