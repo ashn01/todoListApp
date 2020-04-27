@@ -1,17 +1,21 @@
 import PushNotification from 'react-native-push-notification'
 import ITodo from '../interfaces/ITodo'
+import ISettings from '../interfaces/ISettings'
+
+import {isDelayed} from './general'
+import { getAllTodos } from './sqlite'
+import {GetAllOptions} from './SettingValues'
 
 
-const _registerLocalNotification = (todo:ITodo) =>{
+const _registerLocalNotification = async (todo:ITodo) =>{
     //PushNotification.setApplicationIconBadgeNumber(0);
     //PushNotification.cancelAllLocalNotifications();
-
-    var date = new Date(todo.todoDeadline)
-    date.setSeconds(0);
 
     PushNotification.localNotificationSchedule({
         message:todo.todoName, // required
         id:todo.id.toString(),
+        largeIcon:"doobido_icon",
+        title:"Doobi-do Reminder",
         // android ONLY
         vibrate:true,
         vibration:300,
@@ -27,7 +31,7 @@ const _registerLocalNotification = (todo:ITodo) =>{
 
         // production
         //repeatType:"minute",
-        date:date,
+        date:todo.todoDeadline,
     })
 }
 
@@ -37,10 +41,9 @@ export default{
             onNotification:(notification)=>{
                 // required on IOS only
                 // notification.finish(PushNotificationIOS.FetchResult.NoData);
-                if (notification.action == 'Open') {
-                    //console.log(notification.action)
-                }
-                
+                // if (notification.action == 'Open') {
+                //     //console.log(notification.action)
+                // }
                 PushNotification.clearLocalNotification(parseInt(notification.id,10))
             },
             onRegister:function(token){
@@ -50,15 +53,42 @@ export default{
             popInitialNotification:true,
         });
     },
-    addNotification:(todo:ITodo)=>{
-        console.log("Added push",todo.todoName)
-        _registerLocalNotification(todo);
+    // add Notification for all incompleted todos but not past
+    addNotifications: async ()=>{
+        const todos = await getAllTodos(false);
+        const options:ISettings = await GetAllOptions(); // get options
+        for(var todo of todos) {
+            // if notification needed to be fired in the past, do not schedule notification
+            var date = new Date(todo.todoDeadline)
+            date.setMinutes(date.getMinutes()-options.time);
+            date.setSeconds(0);
+            todo.todoDeadline = date;
+            if(!todo.todoCompleted && !isDelayed(todo.todoDeadline)){
+                _registerLocalNotification(todo);
+            }
+        }
     },
-    reset:()=>{
+    // add Notification for incompleted todo but not past
+    addNotification: async (todo: ITodo) => {
+        const options: ISettings = await GetAllOptions(); // get options
+        var date = new Date(todo.todoDeadline)
+        // if notification needed to be fired in the past, do not schedule notification
+        date.setMinutes(date.getMinutes() - options.time);
+        date.setSeconds(0);
+        todo.todoDeadline = date;
+        if (!todo.todoCompleted && !isDelayed(todo.todoDeadline)) {
+            _registerLocalNotification(todo);
+        }
+    },
+    reset: () => {
         PushNotification.cancelAllLocalNotifications();
     },
-
-    unregister:()=>{
+    // it should be fired when todo is completed because completed todo doesn't need reminder
+    removeNotification: (todoId:number) =>{
+        // Android
+        PushNotification.cancelLocalNotifications({id:todoId.toString()});
+    },
+    unregister: () => {
 
     }
 }

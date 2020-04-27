@@ -12,6 +12,10 @@ import { setTodos } from '../modules/todo/actions'
 // db
 import {addTodo, getAllTodosWithChecked, getTodos, updateTodo} from '../helper/sqlite'
 
+// notification register
+import PushNotification from '../helper/pushNotification'
+
+// interface
 import ITodo from '../interfaces/ITodo';
 
 import {validationName} from '../helper/general'
@@ -75,6 +79,9 @@ export default function TodoLists()
                                     categoryId:selectedCategoryId,
                                 }
             setTodoText(""); // reset input field
+            // add notification
+            PushNotification.addNotification(newTodo);
+            
             await addTodo(newTodo);
             initTodos()
             // show toast
@@ -95,6 +102,7 @@ export default function TodoLists()
                     textAlign: 'center'
                 }
             })
+            
         }else{
             // show toast
             Toast.show({

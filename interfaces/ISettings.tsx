@@ -1,5 +1,8 @@
 
 export default interface Settings{
     selectedCategory:string,
-    showDelayed:boolean
+    showDelayed:boolean,
+
+    noticeable:boolean,
+    time:number,
 }

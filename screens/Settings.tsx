@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { Container, Content, ListItem, Left, View, Body, Text, Right, Item, Separator, Picker, Label, Row, Col, List, Switch } from 'native-base'
+import { Container, Content, ListItem, Left, View, Body, Text, Right, Item, Separator, Picker, Label, Row, Col, List, Switch, Input } from 'native-base'
 import SettingHeaderBar from './SettingHeaderBar'
 
 // set setting
-import {SetCategoryOnWidget, GetCategoryOnWidget} from '../helper/SettingValues'
+import {SetCategoryOnWidget, SetNotificationOptions,SetTodoDeadlineOptions, GetAllOptions} from '../helper/SettingValues'
 // redux
 import { useSelector } from 'react-redux'
 import { RootState } from '../modules';
@@ -13,60 +13,140 @@ import { RootState } from '../modules';
 import ICategory from '../interfaces/ICategory'
 import ISettings from '../interfaces/ISettings'
 
+// notification register
+import PushNotification from '../helper/pushNotification'
 
 export default function Settings({ navigation }: any) {
 
   const allCategories: ICategory[] = useSelector((state: RootState) => state.category.categories);
-  const [selectedCategory, setSelectedCategory] = useState<string>();
-  const [selectedNotificationTime, setSelectedNotificationTime] = useState<number>();
-  const [showDelayed, setShowDelayed] = useState<boolean>();
+  // Todo Options
+  // const [additionalDeadline,setAdditionalDeadline] = useState<string>("0");
+  // const [timeMode,setTimeMode] = useState<string>();
+
+  // Notification Options
   const [enablePushNotification, setEnablePushNotification] = useState<boolean>();
+  const [selectedNotificationTime, setSelectedNotificationTime] = useState<number>();
+
+  // Widget Options
+  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [showDelayed, setShowDelayed] = useState<boolean>();
+  
 
   React.useEffect(() => {
     init();
   }, [])
 
   const init = async ()=>{
-    const s:ISettings = await GetCategoryOnWidget(); // retrieve setting property from sharedpreference
+    const s:ISettings = await GetAllOptions(); // retrieve setting property from sharedpreference
     var c = allCategories.find(v=>v.categoryName === s.selectedCategory)
+    console.log(s)
 
+    // Widget Init
     if(c != undefined){
       setSelectedCategory(c.categoryName);
     }
     else{
       setSelectedCategory('All');
     }
-
     setShowDelayed(s.showDelayed);
-    setEnablePushNotification(false);
-    setSelectedNotificationTime(5);
+
+    // Notification Init
+    setEnablePushNotification(s.noticeable);
+    setSelectedNotificationTime(s.time);
+
+    // Deadline Init
+    // setAdditionalDeadline(s.additionalDeadline);
+    // setTimeMode(s.timeMode);
   }
 
+  // Todo options
+  // const setAdditionalDeadlineTime = (value:string) =>{
+  //   console.log(value)
+  //   setAdditionalDeadline(value.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, ''))
+
+  //   SetTodoDeadlineOptions(value, timeMode)
+  // }
+
+  // const setDeadlineTimeMode = (value:string) =>{
+  //   setTimeMode(value);
+  //   SetTodoDeadlineOptions(additionalDeadline, value)
+  // }
+
+  // Notification options
+  const toggleEnablePushNotification = (value:boolean) =>{
+    setEnablePushNotification(value)
+    SetNotificationOptions(value, selectedNotificationTime)
+    if(value) {
+      PushNotification.addNotifications();
+    }else {
+      PushNotification.reset();
+    }
+  }
+
+  const selectNotificationTime = (value: number) => {
+    setSelectedNotificationTime(value)
+    SetNotificationOptions(enablePushNotification, value)
+    // re register
+    PushNotification.reset();
+    PushNotification.addNotifications();
+  }
+
+  // Widget Options
   const selectCategory = (value: string) => {
     setSelectedCategory(value)
     SetCategoryOnWidget(value, showDelayed);
   }
   
-  const selectNotificationTime = (value: number) => {
-    setSelectedNotificationTime(value)
-    //SetCategoryOnWidget(value, showDelayed);
-  }
-
   const toggleShowDelayed = (value:boolean) =>{
     setShowDelayed(value)
     SetCategoryOnWidget(selectedCategory, value);
   }
 
-  const toggleEnablePushNotification = (value:boolean) =>{
-    setEnablePushNotification(value)
-
-  }
 
   return (
     <Container>
       <SettingHeaderBar />
       <Content>
         <List>
+          {
+          // <ListItem itemDivider>
+          //   <Text>
+          //     Todo
+          //   </Text>
+          // </ListItem>
+          // <ListItem avatar style={styles.listItemStyle}>
+          //   <Left>
+          //   </Left>
+          //   <Body>
+          //     <Item style={{borderColor:'transparent'}}>
+          //       <View style={{width:'65%'}}>
+          //         <Input placeholder="Default time adding to deadline" 
+          //         value={additionalDeadline}
+          //         onChangeText={v => setAdditionalDeadlineTime(v)}
+          //         keyboardType="number-pad"
+          //         />
+          //       </View>
+          //       <View style={{width:'35%'}}>
+          //         <Picker
+          //           mode="dropdown"
+          //           placeholder="Select Time"
+          //           placeholderStyle={{ color: '#2874F0' }}
+          //           note={false}
+          //           selectedValue={timeMode}
+          //           onValueChange={v => setDeadlineTimeMode(v)}>
+          //           <Picker.Item label="minutes" value="minutes" />
+          //           <Picker.Item label="hours" value="hours" />
+          //           <Picker.Item label="days" value="days" />
+          //         </Picker>
+          //       </View>
+          //     </Item>
+          //     <Text note style={[styles.noteStyle,{marginTop:5}]}> Default additional time for deadline </Text>
+          //   </Body>
+          //   <Right>
+          //   </Right>
+          // </ListItem>
+          }
+
           <ListItem itemDivider>
             <Text>
               Notification
