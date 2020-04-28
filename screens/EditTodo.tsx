@@ -22,6 +22,9 @@ import ITodo from '../interfaces/ITodo'
 import {validationName} from '../helper/general'
 import LinearGradient from 'react-native-linear-gradient';
 
+// notification register
+import PushNotification from '../helper/pushNotification'
+
 export default function EditTodo({route, navigation}:any)
 {
     const {todoId} = route.params
@@ -105,6 +108,11 @@ export default function EditTodo({route, navigation}:any)
             dbUpdateTodo(todo)
             // update redux
             dispatch(updateTodo(todo))
+
+            // remove current notification and add again
+            PushNotification.removeNotification(todo.id);
+            PushNotification.addNotification(todo);
+
             navigation.goBack();
         }else{
             // show toast

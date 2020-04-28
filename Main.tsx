@@ -21,9 +21,6 @@ import EditCategory from './screens/EditCategory';
 import DrawerNavigation from './DrawerNavigation';
 import Setting from './screens/Settings'
 
-import {isDelayed} from './helper/general'
-
-
 /*
  *  createStackNavigator is a function that returns an object containing 2 properties: Screen and Navigator. 
  *  Both of them are React components used for configuring the navigator. 
@@ -56,15 +53,11 @@ export default function Main() {
           const categories = await getCategories();
           dispatch(setCategories(categories));
 
-          const todos = await getAllTodos(false);
           LocalNotification.unregister(); // remove all notification
           LocalNotification.register();
-          for(var todo of todos){
-            if(!isDelayed(new Date(todo.todoDeadline)))
-              LocalNotification.addNotification(todo);
-          }
+          LocalNotification.addNotifications();
           
-
+          
           setIsLoading(true);
           SplashScreen.hide();
         }

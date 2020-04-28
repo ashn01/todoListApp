@@ -7,15 +7,5 @@ export function validationName(name:string):boolean{
 }
 
 export function isDelayed(date:Date):boolean{
-    return date < new Date();
-}
-
-export function makeToast(text:string, type:"danger"|"success"|"warning", duration:number){
-    Toast.show({
-        text:text,
-        buttonText:'Close',
-        type:type,
-        duration:duration,
-        style:{bottom:'50%'}
-    })
+    return new Date(date) < new Date();
 }

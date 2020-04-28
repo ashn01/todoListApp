@@ -71,9 +71,11 @@ public class TodoWidgetService extends RemoteViewsService {
                 if(categoryName.equals("All")){
                     cursor = db.rawQuery(
                             "SELECT todoName, todoDescription, (strftime('%s',todoDeadline) - strftime('%s','now')) " +
-                            "FROM TODO " +
+                            "FROM TODO t, Category c " +
                             "WHERE todoCompleted = 0 " +
-                             (showDelayed ? "" : " AND (strftime('%s',todoDeadline) - strftime('%s','now')) > 0")
+                             (showDelayed ? " " : " AND (strftime('%s',todoDeadline) - strftime('%s','now')) > 0") +
+                             " AND t.categoryId = c.id " +
+                             " AND t.categoryId IN (SELECT id FROM CATEGORY WHERE checked = 1)"
                             , null);
                 }else{
                     cursor = db.rawQuery(

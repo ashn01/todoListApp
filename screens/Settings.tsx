@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { Container, Content, ListItem, Left, View, Body, Text, Right, Item, Separator, Picker, Label, Row, Col, List, Switch } from 'native-base'
+import { Container, Content, ListItem, Left, View, Body, Text, Right, Item, Separator, Picker, Label, Row, Col, List, Switch, Input } from 'native-base'
 import SettingHeaderBar from './SettingHeaderBar'
 
 // set setting
-import {SetCategoryOnWidget, GetCategoryOnWidget} from '../helper/SettingValues'
+import {SetCategoryOnWidget, SetNotificationOptions, SetTodoOptions, GetAllOptions} from '../helper/SettingValues'
 // redux
 import { useSelector } from 'react-redux'
 import { RootState } from '../modules';
@@ -13,60 +13,122 @@ import { RootState } from '../modules';
 import ICategory from '../interfaces/ICategory'
 import ISettings from '../interfaces/ISettings'
 
+// notification register
+import PushNotification from '../helper/pushNotification'
 
 export default function Settings({ navigation }: any) {
 
   const allCategories: ICategory[] = useSelector((state: RootState) => state.category.categories);
-  const [selectedCategory, setSelectedCategory] = useState<string>();
-  const [selectedNotificationTime, setSelectedNotificationTime] = useState<number>();
-  const [showDelayed, setShowDelayed] = useState<boolean>();
+  // Todo Options
+  const [defaultDeadlineTime,setDefaultDeadlineTime] = useState<number>();
+
+  // Notification Options
   const [enablePushNotification, setEnablePushNotification] = useState<boolean>();
+  const [selectedNotificationTime, setSelectedNotificationTime] = useState<number>();
+
+  // Widget Options
+  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [showDelayed, setShowDelayed] = useState<boolean>();
+  
 
   React.useEffect(() => {
     init();
   }, [])
 
   const init = async ()=>{
-    const s:ISettings = await GetCategoryOnWidget(); // retrieve setting property from sharedpreference
+    const s:ISettings = await GetAllOptions(); // retrieve setting property from sharedpreference
     var c = allCategories.find(v=>v.categoryName === s.selectedCategory)
 
+    // Widget Init
     if(c != undefined){
       setSelectedCategory(c.categoryName);
     }
     else{
       setSelectedCategory('All');
     }
-
     setShowDelayed(s.showDelayed);
-    setEnablePushNotification(false);
-    setSelectedNotificationTime(5);
+
+    // Notification Init
+    setEnablePushNotification(s.noticeable);
+    setSelectedNotificationTime(s.time);
+
+    // Todo Init
+    setDefaultDeadlineTime(s.defaultDeadlineTime);
   }
 
+  // Todo options
+  const selectDefaultDeadlineTime = (value:number) =>{
+    setDefaultDeadlineTime(value);
+    SetTodoOptions(value);
+  }
+
+  // Notification options
+  const toggleEnablePushNotification = (value:boolean) =>{
+    setEnablePushNotification(value)
+    SetNotificationOptions(value, selectedNotificationTime)
+    if(value) {
+      PushNotification.addNotifications();
+    }else {
+      PushNotification.reset();
+    }
+  }
+
+  const selectNotificationTime = (value: number) => {
+    setSelectedNotificationTime(value)
+    SetNotificationOptions(enablePushNotification, value)
+    // re register
+    PushNotification.reset();
+    PushNotification.addNotifications();
+  }
+
+  // Widget Options
   const selectCategory = (value: string) => {
     setSelectedCategory(value)
     SetCategoryOnWidget(value, showDelayed);
   }
   
-  const selectNotificationTime = (value: number) => {
-    setSelectedNotificationTime(value)
-    //SetCategoryOnWidget(value, showDelayed);
-  }
-
   const toggleShowDelayed = (value:boolean) =>{
     setShowDelayed(value)
     SetCategoryOnWidget(selectedCategory, value);
   }
 
-  const toggleEnablePushNotification = (value:boolean) =>{
-    setEnablePushNotification(value)
-
-  }
 
   return (
     <Container>
       <SettingHeaderBar />
       <Content>
         <List>
+          
+          <ListItem itemDivider>
+            <Text>
+              Todo
+            </Text>
+          </ListItem>
+          <ListItem avatar style={styles.pickerListItemStyle}>
+            <Left>
+            </Left>
+            <Body>
+              <Picker
+                mode="dropdown"
+                placeholder="Select Time"
+                placeholderStyle={{ color: '#2874F0' }}
+                note={false}
+                selectedValue={defaultDeadlineTime}
+                onValueChange={v => selectDefaultDeadlineTime(v)}>
+                <Picker.Item label="1 hour" value="60" />
+                <Picker.Item label="6 hours" value="360" />
+                <Picker.Item label="12 hours" value="720" />
+                <Picker.Item label="1 day" value="1440" />
+                <Picker.Item label="2 day" value="2880" />
+                <Picker.Item label="1 week" value="10080" />
+              </Picker>
+              <Text note style={[styles.noteStyle, { marginTop: -10 }]}> Default additional time for deadline </Text>
+            </Body>
+            <Right>
+            </Right>
+          </ListItem>
+          
+
           <ListItem itemDivider>
             <Text>
               Notification

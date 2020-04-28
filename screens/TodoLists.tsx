@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { List, ListItem, Right, Icon, Button, Content, Body, Input, Toast} from 'native-base'
 import { useNavigation } from '@react-navigation/native';
+import moment from 'moment'
 
 import Todo from './Todo'
 
@@ -12,9 +13,14 @@ import { setTodos } from '../modules/todo/actions'
 // db
 import {addTodo, getAllTodosWithChecked, getTodos, updateTodo} from '../helper/sqlite'
 
+// notification register
+import PushNotification from '../helper/pushNotification'
+
+// interface
 import ITodo from '../interfaces/ITodo';
 
 import {validationName} from '../helper/general'
+import {GetAllOptions} from '../helper/SettingValues'
 
 export default function TodoLists()
 {
@@ -66,16 +72,27 @@ export default function TodoLists()
 
     const createTodo =async() =>{
         if(validationName(todoText)){
+            // get settings value and add default deadline time to new todo
+            const settings = await GetAllOptions();
+            var deadline = new Date(new Date().getTime()+60000*settings.defaultDeadlineTime);
+
+            // create todo
             const newTodo:ITodo = { key:null, 
                                     id:null, 
                                     todoName:todoText, 
                                     todoDescription:"", 
-                                    todoDeadline:new Date(), 
+                                    todoDeadline:deadline, 
                                     todoCompleted: false, 
                                     categoryId:selectedCategoryId,
                                 }
             setTodoText(""); // reset input field
-            await addTodo(newTodo);
+
+            // add Todo to database and set auto incremented id, then add notification
+            const id = await addTodo(newTodo);
+            newTodo.id = id;
+            PushNotification.addNotification(newTodo);
+
+
             initTodos()
             // show toast
             Toast.show({
@@ -95,6 +112,7 @@ export default function TodoLists()
                     textAlign: 'center'
                 }
             })
+            
         }else{
             // show toast
             Toast.show({
