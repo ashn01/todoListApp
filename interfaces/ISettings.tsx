@@ -5,4 +5,6 @@ export default interface Settings{
 
     noticeable:boolean,
     time:number,
+
+    defaultDeadlineTime:number,
 }

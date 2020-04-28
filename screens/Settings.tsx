@@ -4,7 +4,7 @@ import { Container, Content, ListItem, Left, View, Body, Text, Right, Item, Sepa
 import SettingHeaderBar from './SettingHeaderBar'
 
 // set setting
-import {SetCategoryOnWidget, SetNotificationOptions,SetTodoDeadlineOptions, GetAllOptions} from '../helper/SettingValues'
+import {SetCategoryOnWidget, SetNotificationOptions, SetTodoOptions, GetAllOptions} from '../helper/SettingValues'
 // redux
 import { useSelector } from 'react-redux'
 import { RootState } from '../modules';
@@ -20,8 +20,7 @@ export default function Settings({ navigation }: any) {
 
   const allCategories: ICategory[] = useSelector((state: RootState) => state.category.categories);
   // Todo Options
-  // const [additionalDeadline,setAdditionalDeadline] = useState<string>("0");
-  // const [timeMode,setTimeMode] = useState<string>();
+  const [defaultDeadlineTime,setDefaultDeadlineTime] = useState<number>();
 
   // Notification Options
   const [enablePushNotification, setEnablePushNotification] = useState<boolean>();
@@ -54,23 +53,15 @@ export default function Settings({ navigation }: any) {
     setEnablePushNotification(s.noticeable);
     setSelectedNotificationTime(s.time);
 
-    // Deadline Init
-    // setAdditionalDeadline(s.additionalDeadline);
-    // setTimeMode(s.timeMode);
+    // Todo Init
+    setDefaultDeadlineTime(s.defaultDeadlineTime);
   }
 
   // Todo options
-  // const setAdditionalDeadlineTime = (value:string) =>{
-  //   console.log(value)
-  //   setAdditionalDeadline(value.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, ''))
-
-  //   SetTodoDeadlineOptions(value, timeMode)
-  // }
-
-  // const setDeadlineTimeMode = (value:string) =>{
-  //   setTimeMode(value);
-  //   SetTodoDeadlineOptions(additionalDeadline, value)
-  // }
+  const selectDefaultDeadlineTime = (value:number) =>{
+    setDefaultDeadlineTime(value);
+    SetTodoOptions(value);
+  }
 
   // Notification options
   const toggleEnablePushNotification = (value:boolean) =>{
@@ -108,44 +99,36 @@ export default function Settings({ navigation }: any) {
       <SettingHeaderBar />
       <Content>
         <List>
-          {
-          // <ListItem itemDivider>
-          //   <Text>
-          //     Todo
-          //   </Text>
-          // </ListItem>
-          // <ListItem avatar style={styles.listItemStyle}>
-          //   <Left>
-          //   </Left>
-          //   <Body>
-          //     <Item style={{borderColor:'transparent'}}>
-          //       <View style={{width:'65%'}}>
-          //         <Input placeholder="Default time adding to deadline" 
-          //         value={additionalDeadline}
-          //         onChangeText={v => setAdditionalDeadlineTime(v)}
-          //         keyboardType="number-pad"
-          //         />
-          //       </View>
-          //       <View style={{width:'35%'}}>
-          //         <Picker
-          //           mode="dropdown"
-          //           placeholder="Select Time"
-          //           placeholderStyle={{ color: '#2874F0' }}
-          //           note={false}
-          //           selectedValue={timeMode}
-          //           onValueChange={v => setDeadlineTimeMode(v)}>
-          //           <Picker.Item label="minutes" value="minutes" />
-          //           <Picker.Item label="hours" value="hours" />
-          //           <Picker.Item label="days" value="days" />
-          //         </Picker>
-          //       </View>
-          //     </Item>
-          //     <Text note style={[styles.noteStyle,{marginTop:5}]}> Default additional time for deadline </Text>
-          //   </Body>
-          //   <Right>
-          //   </Right>
-          // </ListItem>
-          }
+          
+          <ListItem itemDivider>
+            <Text>
+              Todo
+            </Text>
+          </ListItem>
+          <ListItem avatar style={styles.pickerListItemStyle}>
+            <Left>
+            </Left>
+            <Body>
+              <Picker
+                mode="dropdown"
+                placeholder="Select Time"
+                placeholderStyle={{ color: '#2874F0' }}
+                note={false}
+                selectedValue={defaultDeadlineTime}
+                onValueChange={v => selectDefaultDeadlineTime(v)}>
+                <Picker.Item label="1 hour" value="60" />
+                <Picker.Item label="6 hours" value="360" />
+                <Picker.Item label="12 hours" value="720" />
+                <Picker.Item label="1 day" value="1440" />
+                <Picker.Item label="2 day" value="2880" />
+                <Picker.Item label="1 week" value="10080" />
+              </Picker>
+              <Text note style={[styles.noteStyle, { marginTop: -10 }]}> Default additional time for deadline </Text>
+            </Body>
+            <Right>
+            </Right>
+          </ListItem>
+          
 
           <ListItem itemDivider>
             <Text>
