@@ -38,7 +38,6 @@ export default function Settings({ navigation }: any) {
   const init = async ()=>{
     const s:ISettings = await GetAllOptions(); // retrieve setting property from sharedpreference
     var c = allCategories.find(v=>v.categoryName === s.selectedCategory)
-    console.log(s)
 
     // Widget Init
     if(c != undefined){

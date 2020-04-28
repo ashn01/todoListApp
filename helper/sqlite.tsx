@@ -20,7 +20,7 @@ export async function connect() {
                 reject()
             }
         );
-
+        db.executeSql(`PRAGMA foreign_keys=ON`); // enable cascade
     })
 }
 
@@ -42,7 +42,7 @@ export async function createTables():Promise<boolean> {
                     todoDeadline DATE,
                     todoCompleted BOOLEAN,
                     categoryId INTEGER,
-                    FOREIGN KEY (categoryId) REFERENCES category(id)
+                    FOREIGN KEY (categoryId) REFERENCES category(id) ON DELETE CASCADE
                     );`);
             tx.executeSql(`INSERT OR IGNORE INTO CATEGORY (id, categoryName, color, checked) VALUES (0, 'All', '#ffffff', 1)`,[],
             (tx,res)=>{
