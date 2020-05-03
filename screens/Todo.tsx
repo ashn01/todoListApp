@@ -6,6 +6,9 @@ import Swipeable from 'react-native-gesture-handler/Swipeable'
 
 import ITodo from '../interfaces/ITodo'
 
+// notification register
+import PushNotification from '../helper/pushNotification'
+
 // db
 import { updateTodo, deleteTodo as dbDeleteTodo } from '../helper/sqlite'
 
@@ -34,6 +37,11 @@ export default function Todo({ init, todo, color }: TodoProps) {
         // database
         todo.todoCompleted = !todo.todoCompleted
         updateTodo(todo);
+
+        if(todo.todoCompleted) // complete, so remove notification
+            PushNotification.removeNotification(todo.id);
+        else // back to in completed todo, so add notification
+            PushNotification.addNotification(todo);
         init();
         // show toast
         Toast.show({

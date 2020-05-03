@@ -15,6 +15,7 @@ const _registerLocalNotification = async (todo:ITodo) =>{
         message:todo.todoName, // required
         id:todo.id.toString(),
         largeIcon:"doobido_icon",
+        smallIcon:"doobido_icon",
         title:"Doobi-do Reminder",
         // android ONLY
         vibrate:true,
